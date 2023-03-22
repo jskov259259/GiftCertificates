@@ -1,10 +1,11 @@
 package ru.clevertec.ecl.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.postgresql.util.PGInterval;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.List;
 
 public class GiftCertificate {
@@ -14,7 +15,9 @@ public class GiftCertificate {
     private String description;
     private BigDecimal price;
     private PGInterval duration;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
@@ -52,6 +55,11 @@ public class GiftCertificate {
 
     public PGInterval getDuration() {
         return duration;
+    }
+
+    @JsonGetter("duration")
+    public String getDurationValue() {
+        return duration.getDays() + " days";
     }
 
     public void setDuration(PGInterval duration) {
