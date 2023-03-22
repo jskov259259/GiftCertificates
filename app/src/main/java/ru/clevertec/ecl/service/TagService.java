@@ -8,4 +8,6 @@ public interface TagService {
     List<Tag> findAll();
 
     Long create(Tag tag);
+
+    Integer update(Tag tag);
 }
