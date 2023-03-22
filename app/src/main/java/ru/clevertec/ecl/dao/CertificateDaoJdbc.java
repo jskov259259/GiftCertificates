@@ -1,19 +1,22 @@
 package ru.clevertec.ecl.dao;
 
+import org.postgresql.util.PGInterval;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.clevertec.ecl.model.Hello;
+import ru.clevertec.ecl.model.GiftCertificate;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.Period;
 import java.util.List;
 
 @Component
 public class CertificateDaoJdbc implements CertificateDao {
 
-    private String getAllHello = "SELECT order_id, hello FROM hello";
+    private String sqlAllCertificates = "SELECT id, name, description, price, duration, create_date, last_update_date " +
+            "FROM gift_certificate";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -23,17 +26,22 @@ public class CertificateDaoJdbc implements CertificateDao {
     }
 
     @Override
-    public List<Hello> getHello() {
-        return namedParameterJdbcTemplate.query(getAllHello, new HelloRowMapper());
+    public List<GiftCertificate> findAll() {
+        return namedParameterJdbcTemplate.query(sqlAllCertificates, new GiftCertificateRowMapper());
     }
 
-    private class HelloRowMapper implements RowMapper<Hello> {
+    private class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
         @Override
-        public Hello mapRow(ResultSet resultSet, int i) throws SQLException {
-            Hello hello = new Hello();
-            hello.setId(resultSet.getInt("order_id"));
-            hello.setHello(resultSet.getString("hello"));
-            return hello;
+        public GiftCertificate mapRow(ResultSet resultSet, int i) throws SQLException {
+            GiftCertificate certificate = new GiftCertificate();
+            certificate.setId(resultSet.getInt("id"));
+            certificate.setName(resultSet.getString("name"));
+            certificate.setDescription(resultSet.getString("description"));
+            certificate.setPrice(resultSet.getBigDecimal("price"));
+            certificate.setDuration(new PGInterval(resultSet.getString("duration")));
+            certificate.setCreateDate(resultSet.getTimestamp("create_date").toLocalDateTime());
+            certificate.setLastUpdateDate(resultSet.getTimestamp("last_update_date").toLocalDateTime());
+            return certificate;
         }
     }
 }

@@ -3,6 +3,9 @@ package ru.clevertec.ecl.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.clevertec.ecl.dao.CertificateDao;
+import ru.clevertec.ecl.model.GiftCertificate;
+
+import java.util.List;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -14,8 +17,8 @@ public class CertificateServiceImpl implements CertificateService {
         this.certificateDao = certificateDao;
     }
 
-    public String getHello() {
-        String hello = certificateDao.getHello().get(1).getHello();
-        return hello;
+    @Override
+    public List<GiftCertificate> findAll() {
+        return certificateDao.findAll();
     }
 }

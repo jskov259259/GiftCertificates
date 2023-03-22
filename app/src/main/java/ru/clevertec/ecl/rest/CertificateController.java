@@ -5,21 +5,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.service.CertificateService;
 
+import java.util.List;
+
 @RestController
-public class HelloController {
+public class CertificateController {
 
     private CertificateService certificateService;
 
     @Autowired
-    public HelloController(CertificateService certificateService) {
+    public CertificateController(CertificateService certificateService) {
         this.certificateService = certificateService;
     }
 
-    @GetMapping(value="/hello")
-    public ResponseEntity<String> getHelloMessage() {
-        System.out.println(certificateService.getHello());
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(value="/certificates", produces = "application/json")
+    public ResponseEntity<List<GiftCertificate>> certificates() {
+        List<GiftCertificate> certificates = certificateService.findAll();
+        return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 }

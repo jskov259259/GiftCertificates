@@ -19,6 +19,8 @@ dependencies {
 
     compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '6.0.0'
     implementation group: 'org.springframework', name: 'spring-webmvc', version: '6.0.6'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.14.2'
+
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation group: 'org.springframework', name: 'spring-test', version: '6.0.6'
