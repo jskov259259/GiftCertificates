@@ -7,4 +7,6 @@ import java.util.List;
 public interface CertificateDao {
 
     List<GiftCertificate> findAll();
+
+    Long create(GiftCertificate certificate);
 }

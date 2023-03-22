@@ -7,4 +7,6 @@ import java.util.List;
 public interface CertificateService {
 
     List<GiftCertificate> findAll();
+
+    Long create(GiftCertificate certificate);
 }
