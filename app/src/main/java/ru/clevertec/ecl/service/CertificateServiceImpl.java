@@ -37,4 +37,16 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return certificateDao.create(certificate);
     }
+
+    @Override
+    @Transactional
+    public Integer update(GiftCertificate certificate) {
+
+        LocalDateTime currentTime = LocalDateTime.now();
+        certificate.setLastUpdateDate(currentTime);
+        if (certificate.getTags() != null) {
+
+        }
+        return certificateDao.update(certificate);
+    }
 }

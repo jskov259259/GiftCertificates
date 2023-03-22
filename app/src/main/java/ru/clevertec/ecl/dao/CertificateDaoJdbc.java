@@ -24,6 +24,8 @@ public class CertificateDaoJdbc implements CertificateDao {
             "FROM gift_certificate";
     private String sqlCreateCertificate = "INSERT INTO gift_certificate(name, description, price, duration, create_date)" +
             "VALUES (:name, :description, :price, :duration, :create_date)";
+    private String sqlUpdateCertificate = "UPDATE gift_certificate SET name=:name, description=:description, price=:price," +
+            " duration=:duration,last_update_date=:last_update_date WHERE id=:id";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -50,6 +52,20 @@ public class CertificateDaoJdbc implements CertificateDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sqlCreateCertificate, sqlParameterSource, keyHolder, new String[] { "id" });
         return (Long) keyHolder.getKey();
+    }
+
+    @Override
+    public Integer update(GiftCertificate certificate) {
+
+        Map<String, Object> mapParams = new HashMap<>();
+        mapParams.put("id", certificate.getId());
+        mapParams.put("name", certificate.getName());
+        mapParams.put("description", certificate.getDescription());
+        mapParams.put("price", certificate.getPrice());
+        mapParams.put("duration", certificate.getDuration());
+        mapParams.put("last_update_date", certificate.getLastUpdateDate());
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource(mapParams);
+        return namedParameterJdbcTemplate.update(sqlUpdateCertificate, sqlParameterSource);
     }
 
     private class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
