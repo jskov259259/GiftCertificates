@@ -25,7 +25,7 @@ public class CertificateDaoJdbc implements CertificateDao {
     private String sqlCreateCertificate = "INSERT INTO gift_certificate(name, description, price, duration, create_date)" +
             "VALUES (:name, :description, :price, :duration, :create_date)";
     private String sqlUpdateCertificate = "UPDATE gift_certificate SET name=:name, description=:description, price=:price," +
-            " duration=:duration,last_update_date=:last_update_date WHERE id=:id";
+            " duration=:duration, last_update_date=:last_update_date WHERE id=:id";
     private String sqlDeleteCertificateById = "DELETE FROM gift_certificate WHERE id=:id";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -58,15 +58,31 @@ public class CertificateDaoJdbc implements CertificateDao {
     @Override
     public Integer update(GiftCertificate certificate) {
 
+        StringBuilder sqlUpdateCertificate = new StringBuilder("UPDATE gift_certificate SET");
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("id", certificate.getId());
-        mapParams.put("name", certificate.getName());
-        mapParams.put("description", certificate.getDescription());
-        mapParams.put("price", certificate.getPrice());
-        mapParams.put("duration", certificate.getDuration());
+        if (certificate.getName() != null) {
+            sqlUpdateCertificate.append(" name=:name,");
+            mapParams.put("name", certificate.getName());
+        }
+        if (certificate.getDescription() != null) {
+            sqlUpdateCertificate.append(" description=:description,");
+            mapParams.put("description", certificate.getDescription());
+        }
+        if (certificate.getPrice() != null) {
+            sqlUpdateCertificate.append(" price=:price,");
+            mapParams.put("price", certificate.getPrice());
+        }
+        if (certificate.getDuration() != null) {
+            sqlUpdateCertificate.append(" duration=:duration,");
+            mapParams.put("duration", certificate.getDuration());
+        }
+        sqlUpdateCertificate.append(" last_update_date=:last_update_date,");
         mapParams.put("last_update_date", certificate.getLastUpdateDate());
+        sqlUpdateCertificate.deleteCharAt(sqlUpdateCertificate.length() - 1);
+        sqlUpdateCertificate.append(" WHERE id=:id");
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(mapParams);
-        return namedParameterJdbcTemplate.update(sqlUpdateCertificate, sqlParameterSource);
+        return namedParameterJdbcTemplate.update(sqlUpdateCertificate.toString(), sqlParameterSource);
     }
 
     @Override
