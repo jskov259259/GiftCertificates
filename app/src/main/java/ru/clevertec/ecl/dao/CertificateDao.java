@@ -11,4 +11,6 @@ public interface CertificateDao {
     Long create(GiftCertificate certificate);
 
     Integer update(GiftCertificate certificate);
+
+    Integer delete(Integer certificateId);
 }

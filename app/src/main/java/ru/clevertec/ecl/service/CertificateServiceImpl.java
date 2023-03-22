@@ -49,4 +49,11 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return certificateDao.update(certificate);
     }
+
+    @Override
+    @Transactional
+    public Integer delete(Integer departmentId) {
+
+        return certificateDao.delete(departmentId);
+    }
 }

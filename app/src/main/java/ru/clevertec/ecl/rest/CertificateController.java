@@ -40,4 +40,11 @@ public class CertificateController {
         int result = certificateService.update(certificate);
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/certificates/{id}", produces = {"application/json"})
+    public ResponseEntity<Integer> deleteCertificate(@PathVariable Integer id) {
+
+        int result = certificateService.delete(id);
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
 }

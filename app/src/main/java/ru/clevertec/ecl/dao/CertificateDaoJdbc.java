@@ -26,6 +26,7 @@ public class CertificateDaoJdbc implements CertificateDao {
             "VALUES (:name, :description, :price, :duration, :create_date)";
     private String sqlUpdateCertificate = "UPDATE gift_certificate SET name=:name, description=:description, price=:price," +
             " duration=:duration,last_update_date=:last_update_date WHERE id=:id";
+    private String sqlDeleteCertificateById = "DELETE FROM gift_certificate WHERE id=:id";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -66,6 +67,13 @@ public class CertificateDaoJdbc implements CertificateDao {
         mapParams.put("last_update_date", certificate.getLastUpdateDate());
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(mapParams);
         return namedParameterJdbcTemplate.update(sqlUpdateCertificate, sqlParameterSource);
+    }
+
+    @Override
+    public Integer delete(Integer certificateId) {
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", certificateId);
+        return namedParameterJdbcTemplate.update(sqlDeleteCertificateById, sqlParameterSource);
     }
 
     private class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
