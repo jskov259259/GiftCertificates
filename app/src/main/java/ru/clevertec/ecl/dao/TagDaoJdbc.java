@@ -23,6 +23,7 @@ public class TagDaoJdbc implements TagDao {
     private String sqlAllTags = "SELECT id, name FROM tag";
     private String sqlCreateTag = "INSERT INTO tag(name) VALUES (:name)";
     private String sqlUpdateTag = "UPDATE tag SET name=:name WHERE id=:id";
+    private String sqlDeleteTagById = "DELETE FROM tag WHERE id=:id";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -53,6 +54,13 @@ public class TagDaoJdbc implements TagDao {
         mapParams.put("name", tag.getName());
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(mapParams);
         return namedParameterJdbcTemplate.update(sqlUpdateTag, sqlParameterSource);
+    }
+
+    @Override
+    public Integer delete(Integer tagId) {
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", tagId);
+        return namedParameterJdbcTemplate.update(sqlDeleteTagById, sqlParameterSource);
     }
 
     private class TagRowMapper implements RowMapper<Tag> {

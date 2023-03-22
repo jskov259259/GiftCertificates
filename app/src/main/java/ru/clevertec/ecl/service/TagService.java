@@ -10,4 +10,6 @@ public interface TagService {
     Long create(Tag tag);
 
     Integer update(Tag tag);
+
+    Integer delete(Integer tagId);
 }

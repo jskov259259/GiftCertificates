@@ -38,4 +38,11 @@ public class TagServiceImpl implements TagService {
 
         return tagDao.update(tag);
     }
+
+    @Override
+    @Transactional
+    public Integer delete(Integer tagId) {
+
+        return tagDao.delete(tagId);
+    }
 }
