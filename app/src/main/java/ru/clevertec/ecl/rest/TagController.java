@@ -40,4 +40,11 @@ public class TagController {
         int result = tagService.update(tag);
         return new ResponseEntity(result, HttpStatus.OK);
     }
+
+    @DeleteMapping(value = "/tags/{id}", produces = {"application/json"})
+    public ResponseEntity<Integer> deleteTag(@PathVariable Integer id) {
+
+        int result = tagService.delete(id);
+        return new ResponseEntity(result, HttpStatus.OK);
+    }
 }
