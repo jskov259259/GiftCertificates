@@ -4,10 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dao.TagDao;
-import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,5 +30,12 @@ public class TagServiceImpl implements TagService {
     public Long create(Tag tag) {
 
         return tagDao.create(tag);
+    }
+
+    @Override
+    @Transactional
+    public Integer update(Tag tag) {
+
+        return tagDao.update(tag);
     }
 }

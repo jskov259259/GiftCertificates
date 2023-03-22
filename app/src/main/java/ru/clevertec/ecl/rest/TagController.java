@@ -3,11 +3,7 @@ package ru.clevertec.ecl.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.ecl.model.GiftCertificate;
+import org.springframework.web.bind.annotation.*;
 import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.service.TagService;
 
@@ -35,5 +31,13 @@ public class TagController {
 
         Long id = tagService.create(tag);
         return new ResponseEntity<>(id, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/tags/{id}", consumes = {"application/json"}, produces = {"application/json"})
+    public ResponseEntity<Integer> updateTag(@PathVariable Integer id, @RequestBody Tag tag) {
+
+        tag.setId(id);
+        int result = tagService.update(tag);
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }
