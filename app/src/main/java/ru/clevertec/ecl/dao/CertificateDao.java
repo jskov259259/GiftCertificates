@@ -9,7 +9,7 @@ public interface CertificateDao {
 
     List<GiftCertificate> findAll();
 
-    List<GiftCertificate> findAllWithFilter(String query, Map<String, String> filterParams);
+    List<GiftCertificate> findAllWithFilter(String query);
 
     Long create(GiftCertificate certificate);
 

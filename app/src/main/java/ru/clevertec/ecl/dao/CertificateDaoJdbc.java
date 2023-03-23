@@ -39,14 +39,8 @@ public class CertificateDaoJdbc implements CertificateDao {
     }
 
     @Override
-    public List<GiftCertificate> findAllWithFilter(String query, Map<String, String> filterParams) {
-        System.out.println(filterParams.get("tagName"));
-        System.out.println(filterParams.get("certificateName"));
-        System.out.println(filterParams.get("description"));
-        System.out.println(filterParams.get("order1"));
-        System.out.println(filterParams.get("order2"));
-        System.out.println(filterParams.get("orderType"));
-        return namedParameterJdbcTemplate.query(query, filterParams, new GiftCertificateRowMapper());
+    public List<GiftCertificate> findAllWithFilter(String query) {
+        return namedParameterJdbcTemplate.query(query, new GiftCertificateRowMapper());
     }
 
     @Override
