@@ -34,7 +34,7 @@ public class TagController {
     }
 
     @PutMapping(value = "/tags/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<Integer> updateTag(@PathVariable Integer id, @RequestBody Tag tag) {
+    public ResponseEntity<Integer> updateTag(@PathVariable Long id, @RequestBody Tag tag) {
 
         tag.setId(id);
         int result = tagService.update(tag);

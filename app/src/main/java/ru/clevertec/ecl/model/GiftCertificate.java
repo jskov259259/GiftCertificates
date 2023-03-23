@@ -10,7 +10,7 @@ import java.util.List;
 
 public class GiftCertificate {
 
-    private Integer id;
+    private Long id;
     private String name;
     private String description;
     private BigDecimal price;
@@ -21,11 +21,11 @@ public class GiftCertificate {
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -34,7 +34,7 @@ public class CertificateController {
     }
 
     @PutMapping(value = "/certificates/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<Integer> updateCertificate(@PathVariable Integer id, @RequestBody GiftCertificate certificate) {
+    public ResponseEntity<Integer> updateCertificate(@PathVariable Long id, @RequestBody GiftCertificate certificate) {
 
         certificate.setId(id);
         int result = certificateService.update(certificate);
