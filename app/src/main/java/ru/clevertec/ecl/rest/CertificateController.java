@@ -8,6 +8,7 @@ import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.service.CertificateService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 public class CertificateController {
@@ -20,9 +21,9 @@ public class CertificateController {
     }
 
     @GetMapping(value="/certificates", produces = "application/json")
-    public ResponseEntity<List<GiftCertificate>> certificates() {
+    public ResponseEntity<List<GiftCertificate>> certificates(@RequestParam(required=false) Map<String,String> filterParams) {
 
-        List<GiftCertificate> certificates = certificateService.findAll();
+        List<GiftCertificate> certificates = certificateService.findAll(filterParams);
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 

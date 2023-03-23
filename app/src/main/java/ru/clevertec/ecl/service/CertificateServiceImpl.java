@@ -11,6 +11,7 @@ import ru.clevertec.ecl.model.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -28,9 +29,11 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GiftCertificate> findAll() {
+    public List<GiftCertificate> findAll(Map<String, String> filterParams) {
 
-        return certificateDao.findAll();
+        if (filterParams.size() == 0) {
+            return certificateDao.findAll();
+        } else return findAllWithFilter(filterParams);
     }
 
     @Override
@@ -63,6 +66,76 @@ public class CertificateServiceImpl implements CertificateService {
     public Integer delete(Integer departmentId) {
 
         return certificateDao.delete(departmentId);
+    }
+
+    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
+
+        if (!isParamsCorrect(filterParams)) {
+            throw new RuntimeException("Incorrect query params");
+        }
+        String query = createQuery(filterParams);
+        System.out.println(query);
+        return certificateDao.findAllWithFilter(query, filterParams);
+    }
+
+    private boolean isParamsCorrect(Map<String, String> filterParams) {
+
+        return filterParams.keySet().stream().allMatch(key -> {
+            if (key.equals("tagName") || (key.equals("certificateName")) || (key.equals("description"))
+                    || key.contains("order") || key.equals("orderType"))
+                return true;
+            return false;
+        });
+//        for (String key : filterParams.keySet()) {
+//            if (!(key.equals("tagName") || (key.equals("certificateName")) || (key.equals("description"))
+//                    || key.equals("orderBy"))) {
+//                return false;
+//            }
+//        }
+//        return true;
+    }
+
+    private String createQuery(Map<String, String> filterParams) {
+
+        StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
+                " g.create_date, g.last_update_date");
+        if (filterParams.containsKey("tagName")) {
+            queryBuilder.append(", t.name FROM gift_certificate g " +
+                    "INNER JOIN certificates_tags ct On g.id = ct.certificate_id " +
+                    "INNER JOIN tag t On ct.tag_id = t.id " +
+                    "WHERE t.name = :tagName");
+        } else {
+            queryBuilder.append(" FROM gift_certificate g");
+        }
+        if (filterParams.containsKey("tagName") && (filterParams.containsKey("certificateName")
+                || filterParams.containsKey("description"))) {
+            if (filterParams.containsKey("certificateName")) {
+                queryBuilder.append(" AND g.name LIKE '%:certificateName%'");
+            }
+            if (filterParams.containsKey("description")) {
+                queryBuilder.append(" AND g.description LIKE '%:description%'");
+            }
+        } else {
+            if (filterParams.containsKey("certificateName") || filterParams.containsKey("description")) {
+                queryBuilder.append(" WHERE true");
+                if (filterParams.containsKey("certificateName")) {
+                    queryBuilder.append(" AND g.name LIKE '%:certificateName%'");
+                }
+                if (filterParams.containsKey("description")) {
+                    queryBuilder.append(" AND g.description LIKE '%:description%'");
+                }
+            }
+        }
+        if (filterParams.containsKey("order1")) {
+            queryBuilder.append(" ORDER BY :order1");
+            if (filterParams.containsKey("order2")) {
+                queryBuilder.append(", :order2");
+            }
+            if (filterParams.containsKey("orderType")) {
+                queryBuilder.append(" :orderType");
+            }
+        }
+        return queryBuilder.toString();
     }
 
     private void addTagsAndRelations(Long certificateId, List<Tag> tags) {

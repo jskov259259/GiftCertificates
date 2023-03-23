@@ -24,8 +24,6 @@ public class CertificateDaoJdbc implements CertificateDao {
             "FROM gift_certificate";
     private String sqlCreateCertificate = "INSERT INTO gift_certificate(name, description, price, duration, create_date)" +
             "VALUES (:name, :description, :price, :duration, :create_date)";
-    private String sqlUpdateCertificate = "UPDATE gift_certificate SET name=:name, description=:description, price=:price," +
-            " duration=:duration, last_update_date=:last_update_date WHERE id=:id";
     private String sqlDeleteCertificateById = "DELETE FROM gift_certificate WHERE id=:id";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -38,6 +36,17 @@ public class CertificateDaoJdbc implements CertificateDao {
     @Override
     public List<GiftCertificate> findAll() {
         return namedParameterJdbcTemplate.query(sqlAllCertificates, new GiftCertificateRowMapper());
+    }
+
+    @Override
+    public List<GiftCertificate> findAllWithFilter(String query, Map<String, String> filterParams) {
+        System.out.println(filterParams.get("tagName"));
+        System.out.println(filterParams.get("certificateName"));
+        System.out.println(filterParams.get("description"));
+        System.out.println(filterParams.get("order1"));
+        System.out.println(filterParams.get("order2"));
+        System.out.println(filterParams.get("orderType"));
+        return namedParameterJdbcTemplate.query(query, filterParams, new GiftCertificateRowMapper());
     }
 
     @Override

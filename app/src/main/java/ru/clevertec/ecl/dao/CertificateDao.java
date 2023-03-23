@@ -3,10 +3,13 @@ package ru.clevertec.ecl.dao;
 import ru.clevertec.ecl.model.GiftCertificate;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CertificateDao {
 
     List<GiftCertificate> findAll();
+
+    List<GiftCertificate> findAllWithFilter(String query, Map<String, String> filterParams);
 
     Long create(GiftCertificate certificate);
 
