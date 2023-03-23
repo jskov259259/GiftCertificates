@@ -31,9 +31,14 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional(readOnly = true)
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
 
+        List<GiftCertificate> certificates;
         if (filterParams.size() == 0) {
-            return certificateDao.findAll();
-        } else return findAllWithFilter(filterParams);
+            certificates = certificateDao.findAll();
+        } else certificates = findAllWithFilter(filterParams);
+        certificates.stream().forEach(certificate -> {
+            certificate.setTags(tagDao.findAllByCertificateId(certificate.getId()));
+        });
+        return certificates;
     }
 
     @Override

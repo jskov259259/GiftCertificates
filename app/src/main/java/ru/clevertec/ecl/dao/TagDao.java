@@ -17,4 +17,6 @@ public interface TagDao {
     Tag getTagByName(String name);
 
     boolean isTagExists(Tag tag);
+
+    List<Tag> findAllByCertificateId(Long certificateId);
 }

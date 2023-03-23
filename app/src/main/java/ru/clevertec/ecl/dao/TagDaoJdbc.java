@@ -28,6 +28,10 @@ public class TagDaoJdbc implements TagDao {
     private String sqlTagByName = "SELECT id, name FROM tag WHERE name=:name";
     private String sqlTagCountByName = "SELECT count(*) FROM tag " +
             "WHERE name=:name";
+    private String sqlAllTagsByCertificateId = "SELECT t.id, t.name FROM tag t " +
+            "INNER JOIN certificates_tags ct ON t.id = ct.tag_id " +
+            "INNER JOIN gift_certificate g ON ct.certificate_id = g.id " +
+            "WHERE g.id = :certificateId";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -80,6 +84,12 @@ public class TagDaoJdbc implements TagDao {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", tag.getName());
         Integer count = namedParameterJdbcTemplate.queryForObject(sqlTagCountByName, sqlParameterSource, Integer.class);
         return count > 0;
+    }
+
+    @Override
+    public List<Tag> findAllByCertificateId(Long certificateId) {
+        return namedParameterJdbcTemplate.query(sqlAllTagsByCertificateId,
+                new MapSqlParameterSource("certificateId", certificateId), new TagRowMapper());
     }
 
     private class TagRowMapper implements RowMapper<Tag> {
