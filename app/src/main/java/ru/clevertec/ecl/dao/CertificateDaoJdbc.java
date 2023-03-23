@@ -96,7 +96,7 @@ public class CertificateDaoJdbc implements CertificateDao {
         @Override
         public GiftCertificate mapRow(ResultSet resultSet, int i) throws SQLException {
             GiftCertificate certificate = new GiftCertificate();
-            certificate.setId(resultSet.getInt("id"));
+            certificate.setId(resultSet.getLong("id"));
             certificate.setName(resultSet.getString("name"));
             certificate.setDescription(resultSet.getString("description"));
             certificate.setPrice(resultSet.getBigDecimal("price"));

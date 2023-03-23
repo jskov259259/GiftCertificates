@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dao.CertificateDao;
+import ru.clevertec.ecl.dao.CertificateTagDao;
+import ru.clevertec.ecl.dao.TagDao;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.model.Tag;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,10 +16,14 @@ import java.util.List;
 public class CertificateServiceImpl implements CertificateService {
 
     private CertificateDao certificateDao;
+    private TagDao tagDao;
+    private CertificateTagDao certificateTagDao;
 
     @Autowired
-    public CertificateServiceImpl(CertificateDao certificateDao) {
+    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao, CertificateTagDao certificateTagDao) {
         this.certificateDao = certificateDao;
+        this.tagDao = tagDao;
+        this.certificateTagDao = certificateTagDao;
     }
 
     @Override
@@ -32,10 +39,11 @@ public class CertificateServiceImpl implements CertificateService {
 
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setCreateDate(currentTime);
+        Long certificateId = certificateDao.create(certificate);
         if (certificate.getTags() != null) {
-
+            addTagsAndRelations(certificateId, certificate.getTags());
         }
-        return certificateDao.create(certificate);
+        return certificateId;
     }
 
     @Override
@@ -55,5 +63,20 @@ public class CertificateServiceImpl implements CertificateService {
     public Integer delete(Integer departmentId) {
 
         return certificateDao.delete(departmentId);
+    }
+
+    private void addTagsAndRelations(Long certificateId, List<Tag> tags) {
+
+        tags.stream().forEach(tag -> {
+
+            Long tagId = 0L;
+            if (!tagDao.isTagExists(tag)) {
+                tagId = tagDao.create(tag);
+            } else {
+                tagId = tagDao.getTagByName(tag.getName()).getId();
+            }
+            certificateTagDao.create(certificateId, tagId);
+        });
+
     }
 }

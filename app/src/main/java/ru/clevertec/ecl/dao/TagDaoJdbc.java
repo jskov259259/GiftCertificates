@@ -15,6 +15,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Component
@@ -24,6 +25,9 @@ public class TagDaoJdbc implements TagDao {
     private String sqlCreateTag = "INSERT INTO tag(name) VALUES (:name)";
     private String sqlUpdateTag = "UPDATE tag SET name=:name WHERE id=:id";
     private String sqlDeleteTagById = "DELETE FROM tag WHERE id=:id";
+    private String sqlTagByName = "SELECT id, name FROM tag WHERE name=:name";
+    private String sqlTagCountByName = "SELECT count(*) FROM tag " +
+            "WHERE name=:name";
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -63,11 +67,26 @@ public class TagDaoJdbc implements TagDao {
         return namedParameterJdbcTemplate.update(sqlDeleteTagById, sqlParameterSource);
     }
 
+    @Override
+    public Tag getTagByName(String name) {
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", name);
+        return namedParameterJdbcTemplate.queryForObject(sqlTagByName, sqlParameterSource, new TagRowMapper());
+    }
+
+    @Override
+    public boolean isTagExists(Tag tag) {
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", tag.getName());
+        Integer count = namedParameterJdbcTemplate.queryForObject(sqlTagCountByName, sqlParameterSource, Integer.class);
+        return count > 0;
+    }
+
     private class TagRowMapper implements RowMapper<Tag> {
         @Override
         public Tag mapRow(ResultSet resultSet, int i) throws SQLException {
             Tag tag = new Tag();
-            tag.setId(resultSet.getInt("id"));
+            tag.setId(resultSet.getLong("id"));
             tag.setName(resultSet.getString("name"));
             return tag;
         }
