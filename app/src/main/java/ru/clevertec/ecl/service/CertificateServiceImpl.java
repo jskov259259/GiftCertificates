@@ -53,7 +53,7 @@ public class CertificateServiceImpl implements CertificateService {
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setLastUpdateDate(currentTime);
         if (certificate.getTags() != null) {
-
+            addTagsAndRelations(certificate.getId(), certificate.getTags());
         }
         return certificateDao.update(certificate);
     }
@@ -75,7 +75,9 @@ public class CertificateServiceImpl implements CertificateService {
             } else {
                 tagId = tagDao.getTagByName(tag.getName()).getId();
             }
-            certificateTagDao.create(certificateId, tagId);
+            if (!certificateTagDao.isCertificateTagExists(certificateId, tagId)) {
+                certificateTagDao.create(certificateId, tagId);
+            }
         });
 
     }
