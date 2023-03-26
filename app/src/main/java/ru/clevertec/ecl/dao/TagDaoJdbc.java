@@ -1,6 +1,7 @@
 package ru.clevertec.ecl.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -8,6 +9,11 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
+import ru.clevertec.ecl.dao.exceptions.CertificateNotFoundException;
+import ru.clevertec.ecl.dao.exceptions.TagNameNotUniqueException;
+import ru.clevertec.ecl.dao.exceptions.TagNotFoundException;
+import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
 import java.sql.ResultSet;
@@ -22,6 +28,7 @@ import java.util.Optional;
 public class TagDaoJdbc implements TagDao {
 
     private String sqlAllTags = "SELECT id, name FROM tag";
+    private String sqlGetTagById = "SELECT id, name FROM tag WHERE id=:id";
     private String sqlCreateTag = "INSERT INTO tag(name) VALUES (:name)";
     private String sqlUpdateTag = "UPDATE tag SET name=:name WHERE id=:id";
     private String sqlDeleteTagById = "DELETE FROM tag WHERE id=:id";
@@ -46,7 +53,22 @@ public class TagDaoJdbc implements TagDao {
     }
 
     @Override
+    public Tag findById(Long id) {
+
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        try {
+            return namedParameterJdbcTemplate.queryForObject(sqlGetTagById, sqlParameterSource, new TagRowMapper());
+        } catch (EmptyResultDataAccessException ex) {
+            throw new TagNotFoundException(id);
+        }
+    }
+
+    @Override
     public Long create(Tag tag) {
+
+        if (isTagExists(tag)) {
+            throw new TagNameNotUniqueException(tag.getName());
+        }
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", tag.getName());
         KeyHolder keyHolder = new GeneratedKeyHolder();

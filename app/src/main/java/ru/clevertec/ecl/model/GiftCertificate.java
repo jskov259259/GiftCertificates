@@ -2,91 +2,50 @@ package ru.clevertec.ecl.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
-import org.postgresql.util.PGInterval;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Getter
+@Setter
+@ToString(includeFieldNames=true)
+@EqualsAndHashCode
 public class GiftCertificate {
 
     private Long id;
     private String name;
     private String description;
     private BigDecimal price;
-    private PGInterval duration;
+    private Duration duration;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime createDate;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
-    public Long getId() {
-        return id;
+    public GiftCertificate() {
     }
 
-    public void setId(Long id) {
+    public GiftCertificate(Long id, String name) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-    public PGInterval getDuration() {
-        return duration;
     }
 
     @JsonGetter("duration")
     public String getDurationValue() {
-        return duration.getDays() + " days";
+        return duration.toDays() + " days";
     }
 
-    public void setDuration(PGInterval duration) {
-        this.duration = duration;
+    @JsonSetter
+    public void setDurationValue(String value) {
+        this.duration = Duration.ofDays(DurationDayParser.parse(value));
     }
 
-    public LocalDateTime getCreateDate() {
-        return createDate;
-    }
-
-    public void setCreateDate(LocalDateTime createDate) {
-        this.createDate = createDate;
-    }
-
-    public LocalDateTime getLastUpdateDate() {
-        return lastUpdateDate;
-    }
-
-    public void setLastUpdateDate(LocalDateTime lastUpdateDate) {
-        this.lastUpdateDate = lastUpdateDate;
-    }
-
-    public List<Tag> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
 }

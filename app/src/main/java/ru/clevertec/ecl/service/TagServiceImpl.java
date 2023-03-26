@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dao.TagDao;
+import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
 import java.util.List;
@@ -23,6 +24,13 @@ public class TagServiceImpl implements TagService {
     public List<Tag> findAll() {
 
         return tagDao.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Tag findById(Long id) {
+
+        return tagDao.findById(id);
     }
 
     @Override

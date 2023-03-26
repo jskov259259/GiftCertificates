@@ -1,34 +1,28 @@
 package ru.clevertec.ecl.model;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.util.List;
 
+@Getter
+@Setter
+@ToString(includeFieldNames=true)
+@EqualsAndHashCode
 public class Tag {
 
     private Long id;
     private String name;
     private List<GiftCertificate> certificates;
 
-    public Long getId() {
-        return id;
+    public Tag() {
     }
 
-    public void setId(Long id) {
+    public Tag(Long id, String name) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
     }
 
-    public List<GiftCertificate> getCertificates() {
-        return certificates;
-    }
-
-    public void setCertificates(List<GiftCertificate> certificates) {
-        this.certificates = certificates;
-    }
 }

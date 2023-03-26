@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.service.CertificateService;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +28,18 @@ public class CertificateController {
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
+    @GetMapping(value="/certificates/{id}", produces = "application/json")
+    public ResponseEntity<GiftCertificate> certificateById(@PathVariable Long id) {
+
+        GiftCertificate certificate = certificateService.findById(id);
+        return new ResponseEntity<>(certificate, HttpStatus.OK);
+    }
+
     @PostMapping(value="/certificates", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> createCertificate(@RequestBody GiftCertificate certificate) {
 
         Long id = certificateService.create(certificate);
-        return new ResponseEntity<>(id, HttpStatus.OK);
+        return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/certificates/{id}", consumes = {"application/json"}, produces = {"application/json"})

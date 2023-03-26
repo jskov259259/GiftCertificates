@@ -9,6 +9,7 @@ import ru.clevertec.ecl.dao.TagDao;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,13 @@ public class CertificateServiceImpl implements CertificateService {
             certificate.setTags(tagDao.findAllByCertificateId(certificate.getId()));
         });
         return certificates;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GiftCertificate findById(Long id) {
+
+        return certificateDao.findById(id);
     }
 
     @Override
@@ -73,7 +81,7 @@ public class CertificateServiceImpl implements CertificateService {
         return certificateDao.delete(departmentId);
     }
 
-    private void addTagsAndRelations(Long certificateId, List<Tag> tags) {
+    void addTagsAndRelations(Long certificateId, List<Tag> tags) {
 
         tags.stream().forEach(tag -> {
 
@@ -90,14 +98,13 @@ public class CertificateServiceImpl implements CertificateService {
 
     }
 
-    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
+    List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
 
         String query = createQuery(filterParams);
-        System.out.println(query);
         return certificateDao.findAllWithFilter(query);
     }
 
-    private String createQuery(Map<String, String> filterParams) {
+    String createQuery(Map<String, String> filterParams) {
 
         StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
                 " g.create_date, g.last_update_date");
