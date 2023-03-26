@@ -11,7 +11,6 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
 import ru.clevertec.ecl.dao.exceptions.CertificateNotFoundException;
-import ru.clevertec.ecl.model.DurationDayParser;
 import ru.clevertec.ecl.model.GiftCertificate;
 
 import java.sql.ResultSet;
@@ -119,7 +118,7 @@ public class CertificateDaoJdbc implements CertificateDao {
         return namedParameterJdbcTemplate.update(sqlDeleteCertificateById, sqlParameterSource);
     }
 
-    private boolean isCertificateUnique(String certificateName) {
+    boolean isCertificateUnique(String certificateName) {
 
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", certificateName);
         return namedParameterJdbcTemplate.queryForObject(sqlCheckUniqueCertificateName, sqlParameterSource, Integer.class) == 0;

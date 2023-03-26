@@ -5,6 +5,7 @@ INSERT INTO gift_certificate VALUES (4, 'IKEA', 'Gift certificate to the IKEA sh
 INSERT INTO gift_certificate VALUES (5, 'Plumbing', 'Gift certificate to the plumbing shop', 100.25, 10, '2023-03-21 08:30:00', '2023-03-22 09:30:00');
 INSERT INTO gift_certificate VALUES (6, 'Restaurant', 'Gift certificate to the restaurant', 35, 17, '2023-03-10 12:10:35', '2023-03-13 14:00:10');
 INSERT INTO gift_certificate VALUES (7, 'Supermarket', 'Gift certificate to the supermarket', 50.75, 35, '2023-03-18 11:05:00', '2023-03-20 19:30:43');
+INSERT INTO gift_certificate VALUES (8, 'Sport shop', 'Gift certificate to the sport shop', 20, 10, '2023-03-21 11:50:00', '2023-03-20 19:30:43');
 
 INSERT INTO tag VALUES (1, 'massage');
 INSERT INTO tag VALUES (2, 'haircut');
@@ -12,6 +13,7 @@ INSERT INTO tag VALUES (3, 'furniture');
 INSERT INTO tag VALUES (4, 'building tools');
 INSERT INTO tag VALUES (5, 'food');
 INSERT INTO tag VALUES (6, 'alcohol');
+INSERT INTO tag VALUES (7, 'books');
 
 INSERT INTO certificates_tags VALUES (1, 1);
 INSERT INTO certificates_tags VALUES (2, 1);
