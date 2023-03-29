@@ -8,7 +8,6 @@ import ru.clevertec.ecl.dao.*;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +15,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.*;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceImplTest {
@@ -36,7 +36,7 @@ class CertificateServiceImplTest {
     void checkFindAllWithoutFilterParams() {
 
         Map<String, String> filterParams = new HashMap<>();
-        Mockito.when(certificateDao.findAll()).thenReturn(getCertificates());
+        doReturn(getCertificates()).when(certificateDao).findAll();
         List<GiftCertificate> resultList = certificateService.findAll(filterParams);
         assertThat(resultList).hasSize(3);
     }
@@ -46,34 +46,34 @@ class CertificateServiceImplTest {
 
         Map<String, String> filterParams = new HashMap<>();
         filterParams.put("tagName", "food");
-        Mockito.when(certificateDao.findAllWithFilter(ArgumentMatchers.any())).thenReturn(getCertificates());
+        doReturn(getCertificates()).when(certificateDao).findAllWithFilter(ArgumentMatchers.any());
         List<GiftCertificate> resultList = certificateService.findAll(filterParams);
-        Mockito.verify(certificateDao).findAllWithFilter(queryCaptor.capture());
+        verify(certificateDao).findAllWithFilter(queryCaptor.capture());
         assertThat(resultList).hasSize(3);
         assertThat(queryCaptor.getValue()).isNotNull();
     }
 
     @Test
-    void checkCreateWithoutTags() throws SQLException {
+    void checkCreateWithoutTags() {
 
         GiftCertificate certificate = getCertificates().get(0);
-        Mockito.when(certificateDao.create(certificate)).thenReturn(certificate.getId());
+        doReturn(certificate.getId()).when(certificateDao).create(certificate);
         Long resultId = certificateService.create(certificate);
-        Mockito.verify(certificateDao).create(any());
+        verify(certificateDao).create(any());
         assertThat(resultId).isEqualTo(1L);
     }
 
     @Test
-    void checkCreateWithTags() throws SQLException {
+    void checkCreateWithTags() {
 
         GiftCertificate certificate = getCertificates().get(0);
         certificate.setTags(getTags());
-        Mockito.when(certificateDao.create(certificate)).thenReturn(certificate.getId());
+        doReturn(certificate.getId()).when(certificateDao).create(certificate);
 
         Long resultId = certificateService.create(certificate);
 
-        Mockito.verify(tagDao, Mockito.times(2)).create(any());
-        Mockito.verify(certificateTagDao, Mockito.times(2)).create(any(), any());
+        verify(tagDao, Mockito.times(2)).create(any());
+        verify(certificateTagDao, Mockito.times(2)).create(any(), any());
         assertThat(resultId).isEqualTo(1L);
     }
 
@@ -81,9 +81,9 @@ class CertificateServiceImplTest {
     void checkUpdateWithoutTags() {
 
         GiftCertificate certificate = getCertificates().get(0);
-        Mockito.when(certificateDao.update(certificate)).thenReturn(1);
+        doReturn(1).when(certificateDao).update(certificate);
         Integer resultRows = certificateService.update(certificate);
-        Mockito.verify(certificateDao).update(any());
+        verify(certificateDao).update(any());
         assertThat(resultRows).isEqualTo(1);
     }
 
@@ -92,30 +92,30 @@ class CertificateServiceImplTest {
 
         GiftCertificate certificate = getCertificates().get(0);
         certificate.setTags(getTags());
-        Mockito.when(certificateDao.update(certificate)).thenReturn(1);
+        doReturn(1).when(certificateDao).update(certificate);
 
         Integer resultRows = certificateService.update(certificate);
 
-        Mockito.verify(tagDao, Mockito.times(2)).create(any());
-        Mockito.verify(certificateTagDao, Mockito.times(2)).create(any(), any());
+        verify(tagDao, Mockito.times(2)).create(any());
+        verify(certificateTagDao, Mockito.times(2)).create(any(), any());
         assertThat(resultRows).isEqualTo(1);
     }
 
     @Test
     void checkDelete() {
 
-        Mockito.when(certificateDao.delete(any())).thenReturn(1);
+        doReturn(1).when(certificateDao).delete(any());
         Integer resultRows = certificateService.delete(1);
-        Mockito.verify(certificateDao).delete(any());
+        verify(certificateDao).delete(any());
         assertThat(resultRows).isEqualTo(1);
     }
 
     private List<GiftCertificate> getCertificates() {
 
         List<GiftCertificate> certificates = new ArrayList<>();
-        certificates.add(new GiftCertificate(1L, "Certificate1"));
-        certificates.add(new GiftCertificate(2L, "Certificate2"));
-        certificates.add(new GiftCertificate(3L, "Certificate3"));
+        certificates.add(new CertificateBuilder().withId(1L).withName("Certificate1").build());
+        certificates.add(new CertificateBuilder().withId(2L).withName("Certificate2").build());
+        certificates.add(new CertificateBuilder().withId(3L).withName("Certificate3").build());
         return certificates;
     }
 

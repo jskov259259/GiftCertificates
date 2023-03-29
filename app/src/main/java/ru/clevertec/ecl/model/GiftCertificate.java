@@ -3,10 +3,7 @@ package ru.clevertec.ecl.model;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -17,6 +14,8 @@ import java.util.List;
 @Setter
 @ToString(includeFieldNames=true)
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class GiftCertificate {
 
     private Long id;
@@ -30,12 +29,19 @@ public class GiftCertificate {
     private LocalDateTime lastUpdateDate;
     private List<Tag> tags;
 
-    public GiftCertificate() {
-    }
-
     public GiftCertificate(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public GiftCertificate(Long id, String name, String description, BigDecimal price, Duration duration, LocalDateTime createDate, LocalDateTime lastUpdateDate) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.duration = duration;
+        this.createDate = createDate;
+        this.lastUpdateDate = lastUpdateDate;
     }
 
     @JsonGetter("duration")

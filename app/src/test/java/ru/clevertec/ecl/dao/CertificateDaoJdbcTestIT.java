@@ -12,9 +12,6 @@ import ru.clevertec.ecl.config.SpringTestDBConfig;
 import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
 import ru.clevertec.ecl.model.GiftCertificate;
 
-import java.math.BigDecimal;
-import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
@@ -110,17 +107,6 @@ class CertificateDaoJdbcTestIT {
 
         GiftCertificate certificate = certificateDao.findAll().get(0);
         assertThat(certificateDao.isCertificateUnique(certificate.getName())).isFalse();
-    }
-
-    private GiftCertificate getCertificate() {
-
-        GiftCertificate certificate = new GiftCertificate();
-        certificate.setName("Test certificate");
-        certificate.setDescription("Test description");
-        certificate.setPrice(new BigDecimal("10.5"));
-        certificate.setDuration(Duration.ofDays(5));
-        certificate.setCreateDate(LocalDateTime.now());
-        return certificate;
     }
 
 }

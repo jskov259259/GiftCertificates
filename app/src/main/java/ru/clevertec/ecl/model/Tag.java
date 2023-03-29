@@ -1,9 +1,6 @@
 package ru.clevertec.ecl.model;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,14 +8,13 @@ import java.util.List;
 @Setter
 @ToString(includeFieldNames=true)
 @EqualsAndHashCode
+@AllArgsConstructor
+@NoArgsConstructor
 public class Tag {
 
     private Long id;
     private String name;
     private List<GiftCertificate> certificates;
-
-    public Tag() {
-    }
 
     public Tag(Long id, String name) {
         this.id = id;

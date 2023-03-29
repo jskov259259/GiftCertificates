@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.clevertec.ecl.dao.TagDao;
 import ru.clevertec.ecl.model.Tag;
@@ -14,6 +13,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class TagServiceImplTest {
@@ -26,7 +26,7 @@ class TagServiceImplTest {
     @Test
     void checkFindAll() {
 
-        Mockito.when(tagDao.findAll()).thenReturn(getTags());
+        doReturn(getTags()).when(tagDao).findAll();
         List<Tag> resultList = tagService.findAll();
         assertThat(resultList).hasSize(3);
     }
@@ -35,9 +35,9 @@ class TagServiceImplTest {
     void checkCreateTag() {
 
         Tag tag = getTags().get(0);
-        Mockito.when(tagDao.create(tag)).thenReturn(tag.getId());
+        doReturn(tag.getId()).when(tagDao).create(tag);
         Long resultId = tagService.create(tag);
-        Mockito.verify(tagDao).create(any());
+        verify(tagDao).create(any());
         assertThat(resultId).isEqualTo(1L);
     }
 
@@ -45,18 +45,18 @@ class TagServiceImplTest {
     void checkUpdateTag() {
 
         Tag tag = getTags().get(0);
-        Mockito.when(tagDao.update(tag)).thenReturn(1);
+        doReturn(1).when(tagDao).update(tag);
         Integer resultRows = tagService.update(tag);
-        Mockito.verify(tagDao).update(any());
+        verify(tagDao).update(any());
         assertThat(resultRows).isEqualTo(1);
     }
 
     @Test
     void checkDeleteTag() {
 
-        Mockito.when(tagDao.delete(any())).thenReturn(1);
+        doReturn(1).when(tagDao).delete(any());
         Integer resultRows = tagService.delete(1);
-        Mockito.verify(tagDao).delete(any());
+        verify(tagDao).delete(any());
         assertThat(resultRows).isEqualTo(1);
     }
 
