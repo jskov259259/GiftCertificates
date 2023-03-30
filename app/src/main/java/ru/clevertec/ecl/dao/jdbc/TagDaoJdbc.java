@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.dao.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
+import ru.clevertec.ecl.dao.TagDao;
 import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
 import ru.clevertec.ecl.dao.exceptions.CertificateNotFoundException;
 import ru.clevertec.ecl.dao.exceptions.TagNameNotUniqueException;

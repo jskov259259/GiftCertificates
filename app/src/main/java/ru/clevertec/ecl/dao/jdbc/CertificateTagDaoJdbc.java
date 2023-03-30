@@ -1,10 +1,11 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.dao.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
+import ru.clevertec.ecl.dao.CertificateTagDao;
 
 import java.util.HashMap;
 import java.util.Map;

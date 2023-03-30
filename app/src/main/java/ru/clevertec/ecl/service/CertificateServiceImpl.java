@@ -1,6 +1,7 @@
 package ru.clevertec.ecl.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dao.CertificateDao;
@@ -21,7 +22,8 @@ public class CertificateServiceImpl implements CertificateService {
     private CertificateTagDao certificateTagDao;
 
     @Autowired
-    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao, CertificateTagDao certificateTagDao) {
+    public CertificateServiceImpl(@Qualifier("certificateDaoHibernate") CertificateDao certificateDao,
+                                  TagDao tagDao, CertificateTagDao certificateTagDao) {
         this.certificateDao = certificateDao;
         this.tagDao = tagDao;
         this.certificateTagDao = certificateTagDao;
