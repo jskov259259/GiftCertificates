@@ -42,11 +42,10 @@ public class TagDaoHibernate implements TagDao {
     }
 
     @Override
-    public Integer delete(Integer tagId) {
+    public void delete(Integer tagId) {
 
         Tag tag = findById(Long.valueOf(tagId));
         sessionFactory.getCurrentSession().delete(tag);
-        return 1;
     }
 
     @Override

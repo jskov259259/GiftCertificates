@@ -51,11 +51,10 @@ public class CertificateDaoHibernate implements CertificateDao {
     }
 
     @Override
-    public Integer delete(Integer certificateId) {
+    public void delete(Integer certificateId) {
 
         GiftCertificate certificate = findById(Long.valueOf(certificateId));
         sessionFactory.getCurrentSession().delete(certificate);
-        return 1;
     }
 
     private void updateCertificate(GiftCertificate currentCertificate, GiftCertificate newCertificate) {
