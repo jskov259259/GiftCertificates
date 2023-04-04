@@ -25,7 +25,7 @@ import java.util.List;
                 query="select distinct g from GiftCertificate g "
                         + "left join fetch g.tags t "
                         + "where g.id = :id")})
-public class GiftCertificate {
+public class GiftCertificate implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

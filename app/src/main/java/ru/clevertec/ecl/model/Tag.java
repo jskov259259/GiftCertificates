@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Table(name = "tag")
-public class Tag {
+public class Tag implements BaseEntity<Long> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
