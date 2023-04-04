@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.dao.orm;
 
+import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,12 @@ public class CertificateDaoHibernate implements CertificateDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<GiftCertificate> findAll() {
+    public List<GiftCertificate> findAll(Integer pageNumber, Integer pageSize) {
 
-        return sessionFactory.openSession().createQuery("from GiftCertificate g").list();
+        Criteria criteria = sessionFactory.openSession().createCriteria(GiftCertificate.class);
+        criteria.setFirstResult((pageNumber - 1) * pageSize);
+        criteria.setMaxResults(pageSize);
+        return criteria.list();
     }
 
     @Override
@@ -47,7 +51,7 @@ public class CertificateDaoHibernate implements CertificateDao {
         GiftCertificate currentCertificate = findById(certificate.getId());
         updateCertificate(currentCertificate, certificate);
         sessionFactory.getCurrentSession().saveOrUpdate(currentCertificate);
-        return 1;
+        return certificate.getId().intValue();
     }
 
     @Override

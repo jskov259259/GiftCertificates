@@ -15,11 +15,14 @@ import java.util.Map;
 @Service
 public class CertificateServiceImpl implements CertificateService {
 
+    private static final Integer PAGE_NUMBER_DEFAULT = 1;
+    private static final Integer PAGE_SIZE_DEFAULT = 20;
+
     private CertificateDao certificateDao;
     private TagDao tagDao;
 
     @Autowired
-    public CertificateServiceImpl(@Qualifier("certificateDaoHibernate")CertificateDao certificateDao,
+    public CertificateServiceImpl(@Qualifier("certificateDaoHibernate") CertificateDao certificateDao,
                                   @Qualifier("tagDaoHibernate") TagDao tagDao) {
         this.certificateDao = certificateDao;
         this.tagDao = tagDao;
@@ -29,8 +32,16 @@ public class CertificateServiceImpl implements CertificateService {
     @Transactional(readOnly = true)
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
         List<GiftCertificate> certificates;
-        if (filterParams.size() == 0) {
-            certificates = certificateDao.findAll();
+        Integer pageNumber, pageSize;
+        if (filterParams.containsKey("pageNumber") && filterParams.containsKey("pageSize")) {
+            pageNumber = Integer.parseInt(filterParams.get("pageNumber"));
+            pageSize = Integer.parseInt(filterParams.get("pageSize"));
+        } else {
+            pageNumber = PAGE_NUMBER_DEFAULT;
+            pageSize = PAGE_SIZE_DEFAULT;
+        }
+        if (isParamsEmptyOrContainsOnlyPageNumbers(filterParams)) {
+            certificates = certificateDao.findAll(pageNumber, pageSize);
         } else certificates = findAllWithFilter(filterParams);
         return certificates;
     }
@@ -60,8 +71,18 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     @Transactional
-    public Integer delete(Integer certificateId) {
-        return certificateDao.delete(certificateId);
+    public void delete(Integer certificateId) {
+        certificateDao.delete(certificateId);
+    }
+
+    private boolean isParamsEmptyOrContainsOnlyPageNumbers(Map<String, String> filterParams) {
+        if (filterParams.size() == 0) return true;
+        else {
+            if (filterParams.size() == 2 && filterParams.containsKey("pageNumber")
+                    && filterParams.containsKey("pageSize"))
+                return true;
+            else return false;
+        }
     }
 
     List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
@@ -112,5 +133,4 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return queryBuilder.toString();
     }
-
 }
