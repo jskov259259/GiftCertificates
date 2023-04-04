@@ -1,8 +1,7 @@
 package ru.clevertec.ecl.model;
 
+import javax.persistence.*;
 import lombok.*;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -10,15 +9,13 @@ import java.util.List;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tag {
+@Entity
+@Table(name = "tag")
+public class Tag implements BaseEntity<Long> {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private List<GiftCertificate> certificates;
-
-    public Tag(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 
 }

@@ -1,10 +1,10 @@
 package ru.clevertec.ecl.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dao.TagDao;
-import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class TagServiceImpl implements TagService {
     private TagDao tagDao;
 
     @Autowired
-    public TagServiceImpl(TagDao tagDao) {
+    public TagServiceImpl(@Qualifier("tagDaoHibernate") TagDao tagDao) {
         this.tagDao = tagDao;
     }
 
