@@ -1,6 +1,5 @@
 package ru.clevertec.ecl.service;
 
-import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 import java.util.List;
 
@@ -14,5 +13,5 @@ public interface TagService {
 
     Integer update(Tag tag);
 
-    Integer delete(Integer tagId);
+    void delete(Integer tagId);
 }

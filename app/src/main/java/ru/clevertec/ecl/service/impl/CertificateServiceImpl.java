@@ -1,110 +1,86 @@
-package ru.clevertec.ecl.service;
+package ru.clevertec.ecl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.ecl.dao.CertificateDao;
-import ru.clevertec.ecl.dao.CertificateTagDao;
-import ru.clevertec.ecl.dao.TagDao;
+import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
-import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.service.CertificateService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class CertificateServiceImpl implements CertificateService {
 
-    private CertificateDao certificateDao;
-    private TagDao tagDao;
-    private CertificateTagDao certificateTagDao;
+    private static final Integer PAGE_NUMBER_DEFAULT = 1;
+    private static final Integer PAGE_SIZE_DEFAULT = 20;
 
-    @Autowired
-    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao, CertificateTagDao certificateTagDao) {
-        this.certificateDao = certificateDao;
-        this.tagDao = tagDao;
-        this.certificateTagDao = certificateTagDao;
-    }
+    private final CertificateDao certificateDao;
 
     @Override
-    @Transactional(readOnly = true)
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
-
         List<GiftCertificate> certificates;
-        if (filterParams.size() == 0) {
-            certificates = certificateDao.findAll();
+        Integer pageNumber, pageSize;
+        if (filterParams.containsKey("pageNumber") && filterParams.containsKey("pageSize")) {
+            pageNumber = Integer.parseInt(filterParams.get("pageNumber"));
+            pageSize = Integer.parseInt(filterParams.get("pageSize"));
+        } else {
+            pageNumber = PAGE_NUMBER_DEFAULT;
+            pageSize = PAGE_SIZE_DEFAULT;
+        }
+        if (isParamsEmptyOrContainsOnlyPageNumbers(filterParams)) {
+            certificates = certificateDao.findAll(pageNumber, pageSize);
         } else certificates = findAllWithFilter(filterParams);
-        certificates.stream().forEach(certificate -> {
-            certificate.setTags(tagDao.findAllByCertificateId(certificate.getId()));
-        });
         return certificates;
     }
 
     @Override
-    @Transactional(readOnly = true)
     public GiftCertificate findById(Long id) {
-
         return certificateDao.findById(id);
     }
 
     @Override
     @Transactional
     public Long create(GiftCertificate certificate) {
-
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setCreateDate(currentTime);
-        Long certificateId = certificateDao.create(certificate);
-        if (certificate.getTags() != null) {
-            addTagsAndRelations(certificateId, certificate.getTags());
-        }
-        return certificateId;
+        return certificateDao.create(certificate);
     }
 
     @Override
     @Transactional
     public Integer update(GiftCertificate certificate) {
-
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setLastUpdateDate(currentTime);
-        if (certificate.getTags() != null) {
-            addTagsAndRelations(certificate.getId(), certificate.getTags());
-        }
         return certificateDao.update(certificate);
     }
 
     @Override
     @Transactional
-    public Integer delete(Integer departmentId) {
-
-        return certificateDao.delete(departmentId);
+    public void delete(Integer certificateId) {
+        certificateDao.delete(certificateId);
     }
 
-    void addTagsAndRelations(Long certificateId, List<Tag> tags) {
-
-        tags.stream().forEach(tag -> {
-
-            Long tagId = 0L;
-            if (!tagDao.isTagExists(tag)) {
-                tagId = tagDao.create(tag);
-            } else {
-                tagId = tagDao.getTagByName(tag.getName()).getId();
-            }
-            if (!certificateTagDao.isCertificateTagExists(certificateId, tagId)) {
-                certificateTagDao.create(certificateId, tagId);
-            }
-        });
-
+    private boolean isParamsEmptyOrContainsOnlyPageNumbers(Map<String, String> filterParams) {
+        if (filterParams.size() == 0) return true;
+        else {
+            if (filterParams.size() == 2 && filterParams.containsKey("pageNumber")
+                    && filterParams.containsKey("pageSize"))
+                return true;
+            else return false;
+        }
     }
 
-    List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
-
+    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
         String query = createQuery(filterParams);
         return certificateDao.findAllWithFilter(query);
     }
 
-    String createQuery(Map<String, String> filterParams) {
-
+    private String createQuery(Map<String, String> filterParams) {
         StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
                 " g.create_date, g.last_update_date");
         if (filterParams.containsKey("tagName")) {
@@ -145,5 +121,4 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return queryBuilder.toString();
     }
-
 }

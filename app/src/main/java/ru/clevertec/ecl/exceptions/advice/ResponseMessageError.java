@@ -1,12 +1,9 @@
-package ru.clevertec.ecl.rest.exceptions;
+package ru.clevertec.ecl.exceptions.advice;
 
 public class ResponseMessageError {
 
     private String message;
     private Integer code;
-
-    public ResponseMessageError() {
-    }
 
     public ResponseMessageError(String message, Integer code) {
         this.message = message;

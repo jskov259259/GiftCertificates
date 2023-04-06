@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.dao.exceptions;
+package ru.clevertec.ecl.exceptions;
 
 public class TagNotFoundException extends ResourceNotFoundException {
 

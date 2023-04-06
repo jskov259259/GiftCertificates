@@ -1,14 +1,12 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
 import ru.clevertec.ecl.model.GiftCertificate;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public interface CertificateDao {
 
-    List<GiftCertificate> findAll();
+    List<GiftCertificate> findAll(Integer pageNumber, Integer pageSize);
 
     GiftCertificate findById(Long id);
 
@@ -18,5 +16,5 @@ public interface CertificateDao {
 
     Integer update(GiftCertificate certificate);
 
-    Integer delete(Integer certificateId);
+    void delete(Integer certificateId);
 }
