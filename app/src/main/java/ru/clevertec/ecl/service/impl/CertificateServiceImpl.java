@@ -1,35 +1,27 @@
-package ru.clevertec.ecl.service;
+package ru.clevertec.ecl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.ecl.dao.CertificateDao;
-import ru.clevertec.ecl.dao.TagDao;
+import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.service.CertificateService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class CertificateServiceImpl implements CertificateService {
 
     private static final Integer PAGE_NUMBER_DEFAULT = 1;
     private static final Integer PAGE_SIZE_DEFAULT = 20;
 
-    private CertificateDao certificateDao;
-    private TagDao tagDao;
-
-    @Autowired
-    public CertificateServiceImpl(@Qualifier("certificateDaoHibernate") CertificateDao certificateDao,
-                                  @Qualifier("tagDaoHibernate") TagDao tagDao) {
-        this.certificateDao = certificateDao;
-        this.tagDao = tagDao;
-    }
+    private final CertificateDao certificateDao;
 
     @Override
-    @Transactional(readOnly = true)
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
         List<GiftCertificate> certificates;
         Integer pageNumber, pageSize;
@@ -47,7 +39,6 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public GiftCertificate findById(Long id) {
         return certificateDao.findById(id);
     }
@@ -63,7 +54,6 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public Integer update(GiftCertificate certificate) {
-
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setLastUpdateDate(currentTime);
         return certificateDao.update(certificate);
@@ -85,14 +75,12 @@ public class CertificateServiceImpl implements CertificateService {
         }
     }
 
-    List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
-
+    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
         String query = createQuery(filterParams);
         return certificateDao.findAllWithFilter(query);
     }
 
-    String createQuery(Map<String, String> filterParams) {
-
+    private String createQuery(Map<String, String> filterParams) {
         StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
                 " g.create_date, g.last_update_date");
         if (filterParams.containsKey("tagName")) {

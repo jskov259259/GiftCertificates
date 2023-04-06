@@ -1,56 +1,46 @@
-package ru.clevertec.ecl.service;
+package ru.clevertec.ecl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.ecl.dao.TagDao;
+import ru.clevertec.ecl.repository.TagDao;
 import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.service.TagService;
 
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
+@Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
 
-    private TagDao tagDao;
-
-    @Autowired
-    public TagServiceImpl(@Qualifier("tagDaoHibernate") TagDao tagDao) {
-        this.tagDao = tagDao;
-    }
+    private final TagDao tagDao;
 
     @Override
-    @Transactional(readOnly = true)
     public List<Tag> findAll() {
-
         return tagDao.findAll();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Tag findById(Long id) {
-
         return tagDao.findById(id);
     }
 
     @Override
     @Transactional
     public Long create(Tag tag) {
-
         return tagDao.create(tag);
     }
 
     @Override
     @Transactional
     public Integer update(Tag tag) {
-
         return tagDao.update(tag);
     }
 
     @Override
     @Transactional
-    public Integer delete(Integer tagId) {
-
-        return tagDao.delete(tagId);
+    public void delete(Integer tagId) {
+        tagDao.delete(tagId);
     }
 }

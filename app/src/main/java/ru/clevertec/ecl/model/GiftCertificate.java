@@ -5,8 +5,20 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
+import ru.clevertec.ecl.util.DurationDayParser;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -14,10 +26,11 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString(includeFieldNames=true)
-@EqualsAndHashCode
+@ToString
+@EqualsAndHashCode(of = "name")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "gift_certificate")
 @NamedQueries({
@@ -30,6 +43,7 @@ public class GiftCertificate implements BaseEntity<Long> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
     private String description;
     private BigDecimal price;
@@ -48,6 +62,7 @@ public class GiftCertificate implements BaseEntity<Long> {
             org.hibernate.annotations.CascadeType.MERGE,
             org.hibernate.annotations.CascadeType.PERSIST
     })
+    @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "certificates_tags",

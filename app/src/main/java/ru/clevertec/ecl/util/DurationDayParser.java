@@ -1,8 +1,11 @@
-package ru.clevertec.ecl.model;
+package ru.clevertec.ecl.util;
 
+import lombok.experimental.UtilityClass;
+
+@UtilityClass
 public class DurationDayParser {
 
-    public static Long parse(String value) {
+    public Long parse(String value) {
         String[] values = value.split(" ");
         return Long.parseLong(values[0]);
     }

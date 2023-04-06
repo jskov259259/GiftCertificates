@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
 import ru.clevertec.ecl.model.GiftCertificate;
 

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -17,7 +16,6 @@ import java.util.Properties;
 
 @Configuration
 @Profile("prod")
-
 public class SpringDBConfig {
 
     @Value("${postgresql_driver}")
@@ -65,10 +63,4 @@ public class SpringDBConfig {
     public PlatformTransactionManager transactionManager() throws IOException {
         return new HibernateTransactionManager(sessionFactory());
     }
-
-    @Bean
-    public NamedParameterJdbcTemplate namedParameterJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(dataSource());
-    }
-
 }

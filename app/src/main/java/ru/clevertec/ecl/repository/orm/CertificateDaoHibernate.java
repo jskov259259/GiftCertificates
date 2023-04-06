@@ -1,26 +1,22 @@
-package ru.clevertec.ecl.dao.orm;
+package ru.clevertec.ecl.repository.orm;
 
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Criteria;
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import ru.clevertec.ecl.dao.CertificateDao;
+import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
 
 import java.util.List;
 
 @Component
+@RequiredArgsConstructor
 public class CertificateDaoHibernate implements CertificateDao {
 
-    private SessionFactory sessionFactory;
-
-    @Autowired
-    public void setSessionFactory(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+    private final SessionFactory sessionFactory;
 
     public List<GiftCertificate> findAll(Integer pageNumber, Integer pageSize) {
-
         Criteria criteria = sessionFactory.openSession().createCriteria(GiftCertificate.class);
         criteria.setFirstResult((pageNumber - 1) * pageSize);
         criteria.setMaxResults(pageSize);
@@ -29,40 +25,46 @@ public class CertificateDaoHibernate implements CertificateDao {
 
     @Override
     public GiftCertificate findById(Long id) {
-        return (GiftCertificate) sessionFactory.getCurrentSession().getNamedQuery("GiftCertificate.findById")
+        return (GiftCertificate) sessionFactory.openSession().getNamedQuery("GiftCertificate.findById")
                 .setParameter("id", id).uniqueResult();
     }
 
     @Override
     public List<GiftCertificate> findAllWithFilter(String query) {
-        return sessionFactory.getCurrentSession().createSQLQuery(query).list();
+        return sessionFactory.openSession().createSQLQuery(query).list();
     }
 
     @Override
     public Long create(GiftCertificate certificate) {
-
-        sessionFactory.getCurrentSession().saveOrUpdate(certificate);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        session.saveOrUpdate(certificate);
+        session.getTransaction().commit();
         return certificate.getId();
     }
 
     @Override
     public Integer update(GiftCertificate certificate) {
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        GiftCertificate currentCertificate = session.get(GiftCertificate.class, certificate.getId());
 
-        GiftCertificate currentCertificate = findById(certificate.getId());
         updateCertificate(currentCertificate, certificate);
-        sessionFactory.getCurrentSession().saveOrUpdate(currentCertificate);
+        session.saveOrUpdate(currentCertificate);
+        session.getTransaction().commit();
         return certificate.getId().intValue();
     }
 
     @Override
     public void delete(Integer certificateId) {
-
-        GiftCertificate certificate = findById(Long.valueOf(certificateId));
-        sessionFactory.getCurrentSession().delete(certificate);
+        Session session = sessionFactory.openSession();
+        session.beginTransaction();
+        GiftCertificate certificate = session.find(GiftCertificate.class, certificateId.longValue());
+        session.delete(certificate);
+        session.getTransaction().commit();
     }
 
     private void updateCertificate(GiftCertificate currentCertificate, GiftCertificate newCertificate) {
-
         if (newCertificate.getName() != null) {
             currentCertificate.setName(newCertificate.getName());
         }
