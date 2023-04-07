@@ -17,6 +17,7 @@ import ru.clevertec.ecl.service.CertificateService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -33,26 +34,40 @@ public class CertificateController {
 
     @GetMapping(value="/{id}", produces = "application/json")
     public ResponseEntity<GiftCertificate> findById(@PathVariable Long id) {
-        GiftCertificate certificate = certificateService.findById(id);
-        return new ResponseEntity<>(certificate, HttpStatus.OK);
+        Optional<GiftCertificate> certificate = certificateService.findById(id);
+
+        if (certificate.isPresent()) {
+            return new ResponseEntity<>(certificate.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> create(@RequestBody GiftCertificate certificate) {
-        Long id = certificateService.create(certificate);
+        Long id = certificateService.save(certificate);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<Integer> update(@PathVariable Long id, @RequestBody GiftCertificate certificate) {
-        certificate.setId(id);
-        int result = certificateService.update(certificate);
-        return new ResponseEntity(result, HttpStatus.OK);
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody GiftCertificate certificate) {
+        Optional<GiftCertificate> certificateData = certificateService.findById(id);
+
+        if (certificateData.isPresent()) {
+            GiftCertificate newCertificate = certificateData.get();
+            newCertificate.setName(certificate.getName());
+            newCertificate.setDescription(certificate.getDescription());
+            newCertificate.setPrice(certificate.getPrice());
+            newCertificate.setDuration(certificate.getDuration());
+            return new ResponseEntity<>(certificateService.save(newCertificate), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity<Integer> delete(@PathVariable Integer id) {
-        certificateService.delete(id);
+        certificateService.deleteById(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

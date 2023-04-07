@@ -1,23 +1,19 @@
 package ru.clevertec.ecl.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.clevertec.ecl.model.Tag;
 import java.util.List;
+import java.util.Optional;
 
-public interface TagDao {
+public interface TagDao extends JpaRepository<Tag, Long> {
 
     List<Tag> findAll();
 
-    Tag findById(Long id);
+//
+//    Long create(Tag tag);
+//
+//    Integer update(Tag tag);
 
-    Long create(Tag tag);
+    void deleteById(Integer tagId);
 
-    Integer update(Tag tag);
-
-    Integer delete(Integer tagId);
-
-    Tag getTagByName(String name);
-
-    boolean isTagExists(Tag tag);
-
-    List<Tag> findAllByCertificateId(Long certificateId);
 }

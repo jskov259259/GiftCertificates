@@ -1,20 +1,19 @@
 package ru.clevertec.ecl.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import ru.clevertec.ecl.model.GiftCertificate;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface CertificateDao {
+public interface CertificateDao extends JpaRepository<GiftCertificate, Long> {
 
-    List<GiftCertificate> findAll();
+//
+//    List<GiftCertificate> findAllWithFilter(String query);
+//
+//    Long create(GiftCertificate certificate);
+//
+//    Integer update(GiftCertificate certificate);
 
-    GiftCertificate findById(Long id);
-
-    List<GiftCertificate> findAllWithFilter(String query);
-
-    Long create(GiftCertificate certificate);
-
-    Integer update(GiftCertificate certificate);
-
-    Integer delete(Integer certificateId);
+    void deleteById(Integer certificateId);
 }

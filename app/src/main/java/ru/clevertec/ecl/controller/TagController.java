@@ -16,6 +16,7 @@ import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.service.TagService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -37,26 +38,37 @@ public class TagController {
 
     @GetMapping(value="/{id}", produces = "application/json")
     public ResponseEntity<Tag> findById(@PathVariable Long id) {
-        Tag tag = tagService.findById(id);
-        return new ResponseEntity<>(tag, HttpStatus.OK);
+        Optional<Tag> tag = tagService.findById(id);
+
+        if (tag.isPresent()) {
+            return new ResponseEntity<>(tag.get(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<Long> create(@RequestBody Tag tag) {
-        Long id = tagService.create(tag);
+        Long id = tagService.save(tag);
         return new ResponseEntity<>(id, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<Integer> update(@PathVariable Long id, @RequestBody Tag tag) {
-        tag.setId(id);
-        int result = tagService.update(tag);
-        return new ResponseEntity(result, HttpStatus.OK);
+    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody Tag tag) {
+        Optional<Tag> tagData = tagService.findById(id);
+
+        if (tagData.isPresent()) {
+            Tag newTag = tagData.get();
+            newTag.setName(tag.getName());
+            return new ResponseEntity<>(tagService.save(newTag), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping(value = "/{id}", produces = {"application/json"})
     public ResponseEntity<Integer> delete(@PathVariable Integer id) {
-        tagService.delete(id);
+        tagService.deleteById(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

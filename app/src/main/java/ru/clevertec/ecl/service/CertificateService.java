@@ -3,16 +3,17 @@ package ru.clevertec.ecl.service;
 import ru.clevertec.ecl.model.GiftCertificate;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface CertificateService {
 
     List<GiftCertificate> findAll(Map<String, String> filterParams);
 
-    GiftCertificate findById(Long id);
+    Optional<GiftCertificate> findById(Long id);
+//
+    Long save(GiftCertificate certificate);
+//
+//    Integer update(GiftCertificate certificate);
 
-    Long create(GiftCertificate certificate);
-
-    Integer update(GiftCertificate certificate);
-
-    Integer delete(Integer certificateId);
+    void deleteById(Integer certificateId);
 }

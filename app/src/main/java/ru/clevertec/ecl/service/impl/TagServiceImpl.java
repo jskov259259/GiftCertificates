@@ -8,9 +8,10 @@ import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.service.TagService;
 
 import java.util.List;
+import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Transactional(readOnly = true)
 public class TagServiceImpl implements TagService {
 
@@ -22,25 +23,25 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Tag findById(Long id) {
+    public Optional<Tag> findById(Long id) {
         return tagDao.findById(id);
     }
 
     @Override
     @Transactional
-    public Long create(Tag tag) {
-        return tagDao.create(tag);
+    public Long save(Tag tag) {
+        return tagDao.save(tag).getId();
     }
+//
+//    @Override
+//    @Transactional
+//    public Integer update(Tag tag) {
+//        return tagDao.update(tag);
+//    }
 
     @Override
     @Transactional
-    public Integer update(Tag tag) {
-        return tagDao.update(tag);
-    }
-
-    @Override
-    @Transactional
-    public Integer delete(Integer tagId) {
-        return tagDao.delete(tagId);
+    public void deleteById(Integer tagId) {
+        tagDao.deleteById(tagId);
     }
 }

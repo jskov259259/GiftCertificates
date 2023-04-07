@@ -4,89 +4,62 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.repository.CertificateDao;
-import ru.clevertec.ecl.repository.CertificateTagDao;
-import ru.clevertec.ecl.repository.TagDao;
 import ru.clevertec.ecl.model.GiftCertificate;
-import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.service.CertificateService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-@Service
 @RequiredArgsConstructor
+@Service
 @Transactional(readOnly = true)
 public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDao certificateDao;
-    private final TagDao tagDao;
-    private final CertificateTagDao certificateTagDao;
 
     @Override
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
-        List<GiftCertificate> certificates;
+        List<GiftCertificate> certificates = null;
         if (filterParams.size() == 0) {
             certificates = certificateDao.findAll();
-        } else certificates = findAllWithFilter(filterParams);
-        certificates.stream().forEach(certificate -> {
-            certificate.setTags(tagDao.findAllByCertificateId(certificate.getId()));
-        });
+        } else return certificates;
+//        else certificates = findAllWithFilter(filterParams);
         return certificates;
     }
 
     @Override
-    public GiftCertificate findById(Long id) {
+    public Optional<GiftCertificate> findById(Long id) {
         return certificateDao.findById(id);
     }
 
     @Override
     @Transactional
-    public Long create(GiftCertificate certificate) {
+    public Long save(GiftCertificate certificate) {
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setCreateDate(currentTime);
-        Long certificateId = certificateDao.create(certificate);
-        if (certificate.getTags() != null) {
-            addTagsAndRelations(certificateId, certificate.getTags());
-        }
-        return certificateId;
+        return certificateDao.save(certificate).getId();
     }
+//
+//    @Override
+//    @Transactional
+//    public Integer update(GiftCertificate certificate) {
+//        LocalDateTime currentTime = LocalDateTime.now();
+//        certificate.setLastUpdateDate(currentTime);
+//        return certificateDao.update(certificate);
+//    }
 
     @Override
     @Transactional
-    public Integer update(GiftCertificate certificate) {
-        LocalDateTime currentTime = LocalDateTime.now();
-        certificate.setLastUpdateDate(currentTime);
-        if (certificate.getTags() != null) {
-            addTagsAndRelations(certificate.getId(), certificate.getTags());
-        }
-        return certificateDao.update(certificate);
+    public void deleteById(Integer certificateId) {
+        certificateDao.deleteById(certificateId);
     }
 
-    @Override
-    @Transactional
-    public Integer delete(Integer departmentId) {
-        return certificateDao.delete(departmentId);
-    }
-
-    private void addTagsAndRelations(Long certificateId, List<Tag> tags) {
-        tags.stream().forEach(tag -> {
-            Long tagId = 0L;
-            if (!tagDao.isTagExists(tag)) {
-                tagId = tagDao.create(tag);
-            } else {
-                tagId = tagDao.getTagByName(tag.getName()).getId();
-            }
-            if (!certificateTagDao.isCertificateTagExists(certificateId, tagId)) {
-                certificateTagDao.create(certificateId, tagId);
-            }
-        });
-    }
-
-    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
-        String query = createQuery(filterParams);
-        return certificateDao.findAllWithFilter(query);
-    }
+//    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
+//        String query = createQuery(filterParams);
+//        return certificateDao.findAllWithFilter(query);
+//    }
 
     private String createQuery(Map<String, String> filterParams) {
         StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
@@ -129,5 +102,4 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return queryBuilder.toString();
     }
-
 }
