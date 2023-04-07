@@ -42,5 +42,4 @@ public class SpringDBConfig {
     public DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
-
 }

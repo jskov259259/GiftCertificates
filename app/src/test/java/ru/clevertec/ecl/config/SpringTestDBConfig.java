@@ -13,7 +13,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @Profile("dev")
-@ComponentScan({"ru.clevertec.ecl.dao" })
+@ComponentScan({"ru.clevertec.ecl.repository"})
 public class SpringTestDBConfig {
 
     @Bean

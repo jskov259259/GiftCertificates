@@ -1,9 +1,7 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
-import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
 import java.util.List;
-import java.util.Optional;
 
 public interface TagDao {
 

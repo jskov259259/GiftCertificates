@@ -1,6 +1,6 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository.jdbc;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -9,9 +9,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
-import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
-import ru.clevertec.ecl.dao.exceptions.CertificateNotFoundException;
+import ru.clevertec.ecl.exceptions.CertificateNameNotUniqueException;
+import ru.clevertec.ecl.exceptions.CertificateNotFoundException;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.repository.CertificateDao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,28 +22,24 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@RequiredArgsConstructor
 public class CertificateDaoJdbc implements CertificateDao {
 
-    private String sqlAllCertificates = "SELECT id, name, description, price, duration, create_date, last_update_date " +
+    private static final String SQL_ALL_CERTIFICATES = "SELECT id, name, description, price, duration, create_date, last_update_date " +
             "FROM gift_certificate";
-    private String sqlGetCertificateById = "SELECT id, name, description, price, duration, create_date, last_update_date " +
+    private static final String SQL_GET_CERTIFICATE_BY_ID = "SELECT id, name, description, price, duration, create_date, last_update_date " +
             "FROM gift_certificate WHERE id=:id";
-    private String sqlCreateCertificate = "INSERT INTO gift_certificate(name, description, price, duration, create_date)" +
+    private static final String SQL_CREATE_CERTIFICATE = "INSERT INTO gift_certificate(name, description, price, duration, create_date)" +
             "VALUES (:name, :description, :price, :duration, :create_date)";
-    private String sqlDeleteCertificateById = "DELETE FROM gift_certificate WHERE id=:id";
-    private String sqlCheckUniqueCertificateName = "SELECT count(name) from gift_certificate WHERE lower(name)" +
+    private static final String SQL_DELETE_CERTIFICATE_BY_ID = "DELETE FROM gift_certificate WHERE id=:id";
+    private static final String SQL_CHECK_UNIQUE_CERTIFICATE_NAME = "SELECT count(name) from gift_certificate WHERE lower(name)" +
             " = lower(:name)";
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    @Autowired
-    public CertificateDaoJdbc(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-    }
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
     public List<GiftCertificate> findAll() {
-        return namedParameterJdbcTemplate.query(sqlAllCertificates, new GiftCertificateRowMapper());
+        return namedParameterJdbcTemplate.query(SQL_ALL_CERTIFICATES, new GiftCertificateRowMapper());
     }
 
     @Override
@@ -52,10 +49,9 @@ public class CertificateDaoJdbc implements CertificateDao {
 
     @Override
     public GiftCertificate findById(Long id) {
-
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         try {
-            return namedParameterJdbcTemplate.queryForObject(sqlGetCertificateById, sqlParameterSource, new GiftCertificateRowMapper());
+            return namedParameterJdbcTemplate.queryForObject(SQL_GET_CERTIFICATE_BY_ID, sqlParameterSource, new GiftCertificateRowMapper());
         } catch (EmptyResultDataAccessException ex) {
             throw new CertificateNotFoundException(id);
         }
@@ -63,11 +59,9 @@ public class CertificateDaoJdbc implements CertificateDao {
 
     @Override
     public Long create(GiftCertificate certificate) {
-
         if (!isCertificateUnique(certificate.getName())) {
             throw new CertificateNameNotUniqueException(certificate.getName());
         }
-
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("name", certificate.getName());
         mapParams.put("description", certificate.getDescription());
@@ -76,13 +70,12 @@ public class CertificateDaoJdbc implements CertificateDao {
         mapParams.put("create_date", certificate.getCreateDate());
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource(mapParams);
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(sqlCreateCertificate, sqlParameterSource, keyHolder, new String[] { "id" });
+        namedParameterJdbcTemplate.update(SQL_CREATE_CERTIFICATE, sqlParameterSource, keyHolder, new String[] { "id" });
         return keyHolder.getKey().longValue();
     }
 
     @Override
     public Integer update(GiftCertificate certificate) {
-
         StringBuilder sqlUpdateCertificate = new StringBuilder("UPDATE gift_certificate SET");
         Map<String, Object> mapParams = new HashMap<>();
         mapParams.put("id", certificate.getId());
@@ -102,7 +95,6 @@ public class CertificateDaoJdbc implements CertificateDao {
             sqlUpdateCertificate.append(" duration=:duration,");
             mapParams.put("duration", certificate.getDuration().toDays());
         }
-
         sqlUpdateCertificate.append(" last_update_date=:last_update_date,");
         mapParams.put("last_update_date", certificate.getLastUpdateDate());
         sqlUpdateCertificate.deleteCharAt(sqlUpdateCertificate.length() - 1);
@@ -113,15 +105,13 @@ public class CertificateDaoJdbc implements CertificateDao {
 
     @Override
     public Integer delete(Integer certificateId) {
-
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", certificateId);
-        return namedParameterJdbcTemplate.update(sqlDeleteCertificateById, sqlParameterSource);
+        return namedParameterJdbcTemplate.update(SQL_DELETE_CERTIFICATE_BY_ID, sqlParameterSource);
     }
 
-    boolean isCertificateUnique(String certificateName) {
-
+    public boolean isCertificateUnique(String certificateName) {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("name", certificateName);
-        return namedParameterJdbcTemplate.queryForObject(sqlCheckUniqueCertificateName, sqlParameterSource, Integer.class) == 0;
+        return namedParameterJdbcTemplate.queryForObject(SQL_CHECK_UNIQUE_CERTIFICATE_NAME, sqlParameterSource, Integer.class) == 0;
     }
 
     private class GiftCertificateRowMapper implements RowMapper<GiftCertificate> {
@@ -140,5 +130,4 @@ public class CertificateDaoJdbc implements CertificateDao {
             return certificate;
         }
     }
-
 }

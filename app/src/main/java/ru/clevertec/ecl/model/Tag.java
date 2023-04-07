@@ -1,24 +1,20 @@
 package ru.clevertec.ecl.model;
 
-import lombok.*;
-
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
-@ToString(includeFieldNames=true)
-@EqualsAndHashCode
+@ToString
+@EqualsAndHashCode(of = "name")
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
 
     private Long id;
     private String name;
-    private List<GiftCertificate> certificates;
-
-    public Tag(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
 }

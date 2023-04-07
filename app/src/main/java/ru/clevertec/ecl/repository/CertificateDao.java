@@ -1,10 +1,8 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
 import ru.clevertec.ecl.model.GiftCertificate;
 
-import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 public interface CertificateDao {
 

@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,12 +9,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.config.SpringTestDBConfig;
-import ru.clevertec.ecl.dao.exceptions.CertificateNameNotUniqueException;
+import ru.clevertec.ecl.exceptions.CertificateNameNotUniqueException;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.repository.jdbc.CertificateDaoJdbc;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @ContextConfiguration(classes = SpringTestDBConfig.class)
 @Transactional
@@ -32,20 +34,17 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void checkCertificateDaoNotNull() {
-
       assertThat(certificateDao).isNotNull();
     }
 
     @Test
     void checkFindAll() {
-
         List<GiftCertificate> certificates = certificateDao.findAll();
         assertThat(certificates).hasSize(8);
     }
 
     @Test
     void checkFindAllWithFilter() {
-
         String customSql = "SELECT id, name, description, price, duration, create_date, last_update_date " +
                 "FROM gift_certificate WHERE name LIKE '%Spa%'";
         List<GiftCertificate> certificates = certificateDao.findAllWithFilter(customSql);
@@ -54,9 +53,7 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void checkFindById() {
-
         List<GiftCertificate> certificates = certificateDao.findAll();
-
         GiftCertificate certificateSrc = certificates.get(0);
         GiftCertificate certificateDst = certificateDao.findById(certificateSrc.getId());
         assertThat(certificateSrc).isEqualTo(certificateDst);
@@ -64,7 +61,6 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void tryToCreateNotUniqueCertificate() {
-
         GiftCertificate certificate = certificateDao.findAll().get(0);
         assertThatExceptionOfType(CertificateNameNotUniqueException.class)
                 .isThrownBy(() -> {
@@ -74,7 +70,6 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void checkUpdate() {
-
         List<GiftCertificate> certificates = certificateDao.findAll();
 
         GiftCertificate certificateSrc = certificates.get(0);
@@ -87,9 +82,7 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void checkDelete() {
-
         int certificateSizeBefore = certificateDao.findAll().size();
-
         certificateDao.delete(8);
         int certificateSizeAfter = certificateDao.findAll().size();
         assertThat(certificateSizeBefore).isEqualTo(certificateSizeAfter + 1);
@@ -97,14 +90,12 @@ class CertificateDaoJdbcTestIT {
 
     @Test
     void checkIsCertificateUniqueReturnTrue() {
-
         GiftCertificate certificate = new GiftCertificate(50L, "Non existent certificate");
         assertThat(certificateDao.isCertificateUnique(certificate.getName())).isTrue();
     }
 
     @Test
     void checkIsCertificateUniqueReturnFalse() {
-
         GiftCertificate certificate = certificateDao.findAll().get(0);
         assertThat(certificateDao.isCertificateUnique(certificate.getName())).isFalse();
     }

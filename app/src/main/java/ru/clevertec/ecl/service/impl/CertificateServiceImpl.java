@@ -1,36 +1,30 @@
-package ru.clevertec.ecl.service;
+package ru.clevertec.ecl.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.clevertec.ecl.dao.CertificateDao;
-import ru.clevertec.ecl.dao.CertificateTagDao;
-import ru.clevertec.ecl.dao.TagDao;
+import ru.clevertec.ecl.repository.CertificateDao;
+import ru.clevertec.ecl.repository.CertificateTagDao;
+import ru.clevertec.ecl.repository.TagDao;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.service.CertificateService;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class CertificateServiceImpl implements CertificateService {
 
-    private CertificateDao certificateDao;
-    private TagDao tagDao;
-    private CertificateTagDao certificateTagDao;
-
-    @Autowired
-    public CertificateServiceImpl(CertificateDao certificateDao, TagDao tagDao, CertificateTagDao certificateTagDao) {
-        this.certificateDao = certificateDao;
-        this.tagDao = tagDao;
-        this.certificateTagDao = certificateTagDao;
-    }
+    private final CertificateDao certificateDao;
+    private final TagDao tagDao;
+    private final CertificateTagDao certificateTagDao;
 
     @Override
-    @Transactional(readOnly = true)
     public List<GiftCertificate> findAll(Map<String, String> filterParams) {
-
         List<GiftCertificate> certificates;
         if (filterParams.size() == 0) {
             certificates = certificateDao.findAll();
@@ -42,16 +36,13 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public GiftCertificate findById(Long id) {
-
         return certificateDao.findById(id);
     }
 
     @Override
     @Transactional
     public Long create(GiftCertificate certificate) {
-
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setCreateDate(currentTime);
         Long certificateId = certificateDao.create(certificate);
@@ -64,7 +55,6 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public Integer update(GiftCertificate certificate) {
-
         LocalDateTime currentTime = LocalDateTime.now();
         certificate.setLastUpdateDate(currentTime);
         if (certificate.getTags() != null) {
@@ -76,14 +66,11 @@ public class CertificateServiceImpl implements CertificateService {
     @Override
     @Transactional
     public Integer delete(Integer departmentId) {
-
         return certificateDao.delete(departmentId);
     }
 
-    void addTagsAndRelations(Long certificateId, List<Tag> tags) {
-
+    private void addTagsAndRelations(Long certificateId, List<Tag> tags) {
         tags.stream().forEach(tag -> {
-
             Long tagId = 0L;
             if (!tagDao.isTagExists(tag)) {
                 tagId = tagDao.create(tag);
@@ -94,17 +81,14 @@ public class CertificateServiceImpl implements CertificateService {
                 certificateTagDao.create(certificateId, tagId);
             }
         });
-
     }
 
-    List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
-
+    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
         String query = createQuery(filterParams);
         return certificateDao.findAllWithFilter(query);
     }
 
-    String createQuery(Map<String, String> filterParams) {
-
+    private String createQuery(Map<String, String> filterParams) {
         StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
                 " g.create_date, g.last_update_date");
         if (filterParams.containsKey("tagName")) {

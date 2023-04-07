@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.rest.exceptions;
+package ru.clevertec.ecl.exceptions.advice;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import ru.clevertec.ecl.dao.exceptions.ConstraintException;
-import ru.clevertec.ecl.dao.exceptions.ResourceNotFoundException;
+import ru.clevertec.ecl.exceptions.ConstraintException;
+import ru.clevertec.ecl.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
 public class ExceptionHandlingControllerAdvice extends ResponseEntityExceptionHandler {
@@ -24,5 +24,4 @@ public class ExceptionHandlingControllerAdvice extends ResponseEntityExceptionHa
         ResponseMessageError bodyOfResponse = new ResponseMessageError(ex.getMessage(), ex.getCode());
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
-
 }

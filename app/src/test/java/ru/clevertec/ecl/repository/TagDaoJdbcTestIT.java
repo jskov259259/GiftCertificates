@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.dao;
+package ru.clevertec.ecl.repository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +10,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.config.SpringTestDBConfig;
 import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.repository.jdbc.TagDaoJdbc;
 
 import java.util.List;
 
@@ -31,22 +32,18 @@ class TagDaoJdbcTestIT {
 
     @Test
     void checkTagDaoNotNull() {
-
         assertThat(tagDao).isNotNull();
     }
 
     @Test
     void checkFindAll() {
-
         List<Tag> tags = tagDao.findAll();
         assertThat(tags).hasSize(7);
     }
 
     @Test
     void checkFindById() {
-
         List<Tag> tags = tagDao.findAll();
-
         Tag tagSrc = tags.get(0);
         Tag tagDst = tagDao.findById(tagSrc.getId());
         assertThat(tagSrc).isEqualTo(tagDst);
@@ -54,7 +51,6 @@ class TagDaoJdbcTestIT {
 
     @Test
     void checkUpdate() {
-
         List<Tag> tags = tagDao.findAll();
 
         Tag tagSrc = tags.get(0);
@@ -67,9 +63,7 @@ class TagDaoJdbcTestIT {
 
     @Test
     void checkDelete() {
-
         int tagSizeBefore = tagDao.findAll().size();
-
         tagDao.delete(7);
         int tagSizeAfter = tagDao.findAll().size();
         assertThat(tagSizeBefore).isEqualTo(tagSizeAfter + 1);
@@ -77,9 +71,7 @@ class TagDaoJdbcTestIT {
 
     @Test
     void checkGetTagByName() {
-
         List<Tag> tags = tagDao.findAll();
-
         Tag tagSrc = tags.get(0);
         Tag tagDst = tagDao.getTagByName(tagSrc.getName());
         assertThat(tagSrc).isEqualTo(tagDst);
@@ -87,21 +79,18 @@ class TagDaoJdbcTestIT {
 
     @Test
     void checkIsTagExistsReturnTrue() {
-
         Tag tag = tagDao.findAll().get(0);
         assertThat(tagDao.isTagExists(tag)).isTrue();
     }
 
     @Test
     void checkIsTagExistsReturnFalse() {
-
         Tag tag = new Tag(50L, "Non existent tag");
         assertThat(tagDao.isTagExists(tag)).isFalse();
     }
 
     @Test
     void checkFindAllByCertificateId() {
-
         List<Tag> tags = tagDao.findAllByCertificateId(3L);
         assertThat(tags.size()).isEqualTo(2);
     }
