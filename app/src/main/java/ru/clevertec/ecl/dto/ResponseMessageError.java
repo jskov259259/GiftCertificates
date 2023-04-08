@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.exceptions.advice;
+package ru.clevertec.ecl.dto;
 
 public class ResponseMessageError {
 

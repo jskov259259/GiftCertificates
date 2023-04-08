@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import ru.clevertec.ecl.dto.ResponseMessageError;
 import ru.clevertec.ecl.exceptions.ConstraintException;
 import ru.clevertec.ecl.exceptions.ResourceNotFoundException;
 

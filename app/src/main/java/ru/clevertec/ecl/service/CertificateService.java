@@ -1,19 +1,23 @@
 package ru.clevertec.ecl.service;
 
-import ru.clevertec.ecl.model.GiftCertificate;
+import org.springframework.web.bind.annotation.RequestBody;
+import ru.clevertec.ecl.dto.GiftCertificateDto;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface CertificateService {
 
-    List<GiftCertificate> findAll(Map<String, String> filterParams);
+    List<GiftCertificateDto> findAll(Integer pageNo, Integer pageSize, String sortBy);
 
-    Optional<GiftCertificate> findById(Long id);
-//
-    Long save(GiftCertificate certificate);
-//
-//    Integer update(GiftCertificate certificate);
+    GiftCertificateDto findById(Long id);
 
-    void deleteById(Integer certificateId);
+    GiftCertificateDto save(GiftCertificateDto certificateDto);
+
+    GiftCertificateDto update(GiftCertificateDto certificateDto);
+
+    void updatePrice(Long id, BigDecimal price);
+
+    void deleteById(Long certificateId);
 }

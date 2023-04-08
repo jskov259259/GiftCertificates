@@ -4,13 +4,19 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.Cascade;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import ru.clevertec.ecl.util.DurationDayParser;
 
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,11 +28,6 @@ import java.util.List;
 @Builder
 @Entity
 @Table(name = "gift_certificate")
-@NamedQueries({
-        @NamedQuery(name="GiftCertificate.findById",
-                query="select distinct g from GiftCertificate g "
-                        + "left join fetch g.tags t "
-                        + "where g.id = :id")})
 public class GiftCertificate implements BaseEntity<Long> {
 
     @Id
@@ -46,18 +47,17 @@ public class GiftCertificate implements BaseEntity<Long> {
     @Column(name = "last_update_date")
     private LocalDateTime lastUpdateDate;
 
-    @Cascade({
-            org.hibernate.annotations.CascadeType.SAVE_UPDATE,
-            org.hibernate.annotations.CascadeType.MERGE,
-            org.hibernate.annotations.CascadeType.PERSIST
-    })
     @ToString.Exclude
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE,
+            CascadeType.REFRESH})
     @JoinTable(
             name = "certificates_tags",
             joinColumns = @JoinColumn(name = "certificate_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id"))
-    private List<Tag> tags;
+    private List<Tag> tags = new ArrayList<>();
 
     public GiftCertificate(Long id, String name) {
         this.id = id;
@@ -85,7 +85,16 @@ public class GiftCertificate implements BaseEntity<Long> {
     }
 
     public void addTag(Tag tag) {
-        tags.add(tag);
+        this.tags.add(tag);
+        tag.getCertificates().add(this);
+    }
+
+    public void removeTag(long tagId) {
+        Tag tag = this.tags.stream().filter(t -> t.getId() == tagId).findFirst().orElse(null);
+        if (tag != null) {
+            this.tags.remove(tag);
+            tag.getCertificates().remove(this);
+        }
     }
 
 }

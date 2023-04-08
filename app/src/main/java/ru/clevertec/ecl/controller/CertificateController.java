@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -12,61 +13,58 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.dto.GiftCertificateDto;
 import ru.clevertec.ecl.service.CertificateService;
 
+import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/certificates")
 public class CertificateController {
 
+    private static final String DEFAULT_PAGE_NO = "0";
+    private static final String DEFAULT_PAGE_SIZE = "10";
+    private static final String DEFAULT_SORT_BY = "id";
     private final CertificateService certificateService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<GiftCertificate>> findAll(@RequestParam(required=false) Map<String,String> filterParams) {
-        List<GiftCertificate> certificates = certificateService.findAll(filterParams);
+    public ResponseEntity<List<GiftCertificateDto>> findAll(
+            @RequestParam(defaultValue = DEFAULT_PAGE_NO) Integer pageNo,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy) {
+        List<GiftCertificateDto> certificates = certificateService.findAll(pageNo, pageSize, sortBy);
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}", produces = "application/json")
-    public ResponseEntity<GiftCertificate> findById(@PathVariable Long id) {
-        Optional<GiftCertificate> certificate = certificateService.findById(id);
-
-        if (certificate.isPresent()) {
-            return new ResponseEntity<>(certificate.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<GiftCertificateDto> findById(@PathVariable Long id) {
+        GiftCertificateDto certificate = certificateService.findById(id);
+        return new ResponseEntity<>(certificate, HttpStatus.OK);
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Long> create(@RequestBody GiftCertificate certificate) {
-        Long id = certificateService.save(certificate);
-        return new ResponseEntity<>(id, HttpStatus.CREATED);
+    public ResponseEntity<GiftCertificateDto> create(@RequestBody GiftCertificateDto certificateDto) {
+        GiftCertificateDto createdGiftCertificateDto = certificateService.save(certificateDto);
+        return new ResponseEntity<>(createdGiftCertificateDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<Long> update(@PathVariable Long id, @RequestBody GiftCertificate certificate) {
-        Optional<GiftCertificate> certificateData = certificateService.findById(id);
+    public ResponseEntity<GiftCertificateDto> update(@PathVariable Long id, @RequestBody GiftCertificateDto certificateDto) {
+        certificateDto.setId(id);
+        GiftCertificateDto certificate = certificateService.update(certificateDto);
+        return new ResponseEntity<>(certificate, HttpStatus.OK);
+    }
 
-        if (certificateData.isPresent()) {
-            GiftCertificate newCertificate = certificateData.get();
-            newCertificate.setName(certificate.getName());
-            newCertificate.setDescription(certificate.getDescription());
-            newCertificate.setPrice(certificate.getPrice());
-            newCertificate.setDuration(certificate.getDuration());
-            return new ResponseEntity<>(certificateService.save(newCertificate), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    @PatchMapping("/{id}/price")
+    public ResponseEntity<?> updatePrice(@PathVariable Long id, @RequestBody BigDecimal price) {
+        certificateService.updatePrice(id, price);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}", produces = {"application/json"})
-    public ResponseEntity<Integer> delete(@PathVariable Integer id) {
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         certificateService.deleteById(id);
         return new ResponseEntity(HttpStatus.OK);
     }

@@ -1,16 +1,23 @@
 package ru.clevertec.ecl.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.ecl.dto.GiftCertificateDto;
+import ru.clevertec.ecl.exceptions.CertificateNotFoundException;
+import ru.clevertec.ecl.mapper.GiftCertificateMapper;
 import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.service.CertificateService;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -18,88 +25,67 @@ import java.util.Optional;
 public class CertificateServiceImpl implements CertificateService {
 
     private final CertificateDao certificateDao;
+    private final GiftCertificateMapper certificateMapper;
 
     @Override
-    public List<GiftCertificate> findAll(Map<String, String> filterParams) {
-        List<GiftCertificate> certificates = null;
-        if (filterParams.size() == 0) {
-            certificates = certificateDao.findAll();
-        } else return certificates;
-//        else certificates = findAllWithFilter(filterParams);
-        return certificates;
+    public List<GiftCertificateDto> findAll(Integer pageNo, Integer pageSize, String sortBy) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<GiftCertificate> pagedResult = certificateDao.findAll(paging);
+
+        return pagedResult.getContent().stream()
+                .map(certificateMapper::certificateToDto)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<GiftCertificate> findById(Long id) {
-        return certificateDao.findById(id);
+    public GiftCertificateDto findById(Long id) {
+        GiftCertificate certificate = certificateDao.findById(id)
+                .orElseThrow(() -> new CertificateNotFoundException(id));
+        return certificateMapper.certificateToDto(certificate);
     }
 
     @Override
     @Transactional
-    public Long save(GiftCertificate certificate) {
+    public GiftCertificateDto save(GiftCertificateDto certificateDto) {
         LocalDateTime currentTime = LocalDateTime.now();
-        certificate.setCreateDate(currentTime);
-        return certificateDao.save(certificate).getId();
+        certificateDto.setCreateDate(currentTime);
+        GiftCertificate certificate = certificateMapper.dtoToCertificate(certificateDto);
+
+        GiftCertificate createdCertificate = certificateDao.save(certificate);
+        return certificateMapper.certificateToDto(createdCertificate);
     }
-//
-//    @Override
-//    @Transactional
-//    public Integer update(GiftCertificate certificate) {
-//        LocalDateTime currentTime = LocalDateTime.now();
-//        certificate.setLastUpdateDate(currentTime);
-//        return certificateDao.update(certificate);
-//    }
 
     @Override
     @Transactional
-    public void deleteById(Integer certificateId) {
+    public GiftCertificateDto update(GiftCertificateDto certificateDto) {
+        GiftCertificate currentCertificate = certificateDao.findById(certificateDto.getId())
+                .orElseThrow(() -> new CertificateNotFoundException(certificateDto.getId()));
+
+        GiftCertificate newCertificate = certificateMapper.dtoToCertificate(certificateDto);
+        updateCertificate(currentCertificate, newCertificate);
+        GiftCertificate updatedCertificate = certificateDao.save(currentCertificate);
+        return certificateMapper.certificateToDto(updatedCertificate);
+    }
+
+    @Override
+    @Transactional
+    public void updatePrice(Long id, BigDecimal price) {
+        certificateDao.updatePrice(id, price);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(Long certificateId) {
         certificateDao.deleteById(certificateId);
     }
 
-//    private List<GiftCertificate> findAllWithFilter(Map<String, String> filterParams) {
-//        String query = createQuery(filterParams);
-//        return certificateDao.findAllWithFilter(query);
-//    }
-
-    private String createQuery(Map<String, String> filterParams) {
-        StringBuilder queryBuilder = new StringBuilder("SELECT g.id, g.name, g.description, g.price, g.duration," +
-                " g.create_date, g.last_update_date");
-        if (filterParams.containsKey("tagName")) {
-            queryBuilder.append(", t.name FROM gift_certificate g " +
-                    "INNER JOIN certificates_tags ct On g.id = ct.certificate_id " +
-                    "INNER JOIN tag t On ct.tag_id = t.id " +
-                    "WHERE t.name = '" + filterParams.get("tagName") + "'");
-        } else {
-            queryBuilder.append(" FROM gift_certificate g");
-        }
-        if (filterParams.containsKey("tagName") && (filterParams.containsKey("certificateName")
-                || filterParams.containsKey("description"))) {
-            if (filterParams.containsKey("certificateName")) {
-                queryBuilder.append(" AND g.name LIKE '%" + filterParams.get("certificateName") + "%'");
-            }
-            if (filterParams.containsKey("description")) {
-                queryBuilder.append(" AND g.description LIKE '%" + filterParams.get("description") + "%'");
-            }
-        } else {
-            if (filterParams.containsKey("certificateName") || filterParams.containsKey("description")) {
-                queryBuilder.append(" WHERE true");
-                if (filterParams.containsKey("certificateName")) {
-                    queryBuilder.append(" AND g.name LIKE '%" + filterParams.get("certificateName") + "%'");
-                }
-                if (filterParams.containsKey("description")) {
-                    queryBuilder.append(" AND g.description LIKE '%" + filterParams.get("description") + "%'");
-                }
-            }
-        }
-        if (filterParams.containsKey("order1")) {
-            queryBuilder.append(" ORDER BY " + filterParams.get("order1"));
-            if (filterParams.containsKey("order2")) {
-                queryBuilder.append(", " + filterParams.get("order2"));
-            }
-            if (filterParams.containsKey("orderType")) {
-                queryBuilder.append(" " + filterParams.get("orderType"));
-            }
-        }
-        return queryBuilder.toString();
+    private void updateCertificate(GiftCertificate currentCertificate, GiftCertificate newCertificate) {
+        currentCertificate.setLastUpdateDate(LocalDateTime.now());
+        currentCertificate.setName(newCertificate.getName());
+        currentCertificate.setDescription(newCertificate.getDescription());
+        currentCertificate.setPrice(newCertificate.getPrice());
+        currentCertificate.setDuration(newCertificate.getDuration());
+        newCertificate.getTags().stream().forEach(currentCertificate::addTag);
     }
+
 }

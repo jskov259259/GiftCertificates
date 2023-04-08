@@ -1,18 +1,17 @@
 package ru.clevertec.ecl.service;
 
-import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.dto.TagDto;
 import java.util.List;
-import java.util.Optional;
 
 public interface TagService {
 
-    List<Tag> findAll();
+    List<TagDto> findAll(Integer pageNo, Integer pageSize, String sortBy);
 
-    Optional<Tag> findById(Long id);
+    TagDto findById(Long id);
 
-    Long save(Tag tag);
-//
-//    Integer update(Tag tag);
+    TagDto save(TagDto tagDto);
 
-    void deleteById(Integer tagId);
+    TagDto update(TagDto tag);
+
+    void deleteById(Long tagId);
 }
