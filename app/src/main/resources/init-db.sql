@@ -26,3 +26,11 @@ INSERT INTO certificates_tags VALUES (6, 6);
 INSERT INTO certificates_tags VALUES (7, 5);
 INSERT INTO certificates_tags VALUES (7, 6);
 INSERT INTO certificates_tags VALUES (7, 4);
+
+INSERT INTO users VALUES (1, 'Stan', 25);
+INSERT INTO users VALUES (2, 'John', 33);
+INSERT INTO users VALUES (3, 'Eric', 15);
+INSERT INTO users VALUES (4, 'Bob', 20);
+INSERT INTO users VALUES (5, 'Petr', 42);
+INSERT INTO users VALUES (6, 'Alexandr', 55);
+INSERT INTO users VALUES (7, 'Mike', 41);

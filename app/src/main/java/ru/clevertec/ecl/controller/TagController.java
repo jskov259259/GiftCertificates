@@ -18,14 +18,15 @@ import ru.clevertec.ecl.service.TagService;
 
 import java.util.List;
 
+import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_NO;
+import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_SIZE;
+import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_SORT_BY;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/tags")
 public class TagController {
 
-    private static final String DEFAULT_PAGE_NO = "0";
-    private static final String DEFAULT_PAGE_SIZE = "10";
-    private static final String DEFAULT_SORT_BY = "id";
     private TagService tagService;
 
     @Autowired
