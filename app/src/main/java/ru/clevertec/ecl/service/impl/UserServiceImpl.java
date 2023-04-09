@@ -39,4 +39,10 @@ public class UserServiceImpl implements UserService {
         return userMapper.userToDto(user);
     }
 
+    @Override
+    public UserDto findUserByHighestCostOfAllOrders() {
+        User user = userDao.findUserByHighestCostOfAllOrders();
+        return userMapper.userToDto(user);
+    }
+
 }

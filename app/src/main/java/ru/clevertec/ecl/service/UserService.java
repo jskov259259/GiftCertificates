@@ -10,4 +10,6 @@ public interface UserService {
 
     UserDto findById(Long id);
 
+    UserDto findUserByHighestCostOfAllOrders();
+
 }

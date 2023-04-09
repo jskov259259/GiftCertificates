@@ -1,7 +1,20 @@
 package ru.clevertec.ecl.model;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -24,7 +37,9 @@ public class User implements BaseEntity<Long> {
 
     private Integer age;
 
-    @OneToMany(mappedBy="user", cascade=CascadeType.ALL)
+    @ToString.Exclude
+    @JsonIgnore
+    @OneToMany(mappedBy="user", cascade= CascadeType.ALL)
     private List<Order> orders;
 
     public boolean addOrder(Order order) {

@@ -4,7 +4,7 @@ public class UserNotFoundException extends ResourceNotFoundException {
 
     public UserNotFoundException(Long id) {
         super(id);
-        this.message = "Requested users not found";
+        this.message = "Requested user not found";
         this.code = 40403;
     }
 
