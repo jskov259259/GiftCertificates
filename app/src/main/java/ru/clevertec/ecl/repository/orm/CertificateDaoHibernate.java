@@ -1,13 +1,19 @@
 package ru.clevertec.ecl.repository.orm;
 
+
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Component;
+import ru.clevertec.ecl.dto.SearchCriteria;
 import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.util.CertificateSearchQueryCriteriaConsumer;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.List;
 
 @Component
@@ -16,11 +22,22 @@ public class CertificateDaoHibernate implements CertificateDao {
 
     private final SessionFactory sessionFactory;
 
-    public List<GiftCertificate> findAll(Integer pageNumber, Integer pageSize) {
-        Criteria criteria = sessionFactory.openSession().createCriteria(GiftCertificate.class);
-        criteria.setFirstResult((pageNumber - 1) * pageSize);
-        criteria.setMaxResults(pageSize);
-        return criteria.list();
+    @Override
+    public List<GiftCertificate> findAll(List<SearchCriteria> params) {
+        CriteriaBuilder builder = sessionFactory.getCriteriaBuilder();
+        CriteriaQuery<GiftCertificate> query = builder.createQuery(GiftCertificate.class);
+        Root r = query.from(GiftCertificate.class);
+
+        Predicate predicate = builder.conjunction();
+
+        CertificateSearchQueryCriteriaConsumer searchConsumer =
+                new CertificateSearchQueryCriteriaConsumer(predicate, builder, r);
+        params.stream().forEach(searchConsumer);
+        predicate = searchConsumer.getPredicate();
+        query.where(predicate);
+
+        List<GiftCertificate> result = sessionFactory.openSession().createQuery(query).getResultList();
+        return result;
     }
 
     @Override

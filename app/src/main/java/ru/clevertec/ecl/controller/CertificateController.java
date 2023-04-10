@@ -1,7 +1,6 @@
 package ru.clevertec.ecl.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,10 +13,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.dto.SearchCriteria;
 import ru.clevertec.ecl.service.CertificateService;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @RestController
@@ -27,8 +29,17 @@ public class CertificateController {
     private final CertificateService certificateService;
 
     @GetMapping(produces = "application/json")
-    public ResponseEntity<List<GiftCertificate>> findAll(@RequestParam(required=false) Map<String,String> filterParams) {
-        List<GiftCertificate> certificates = certificateService.findAll(filterParams);
+    public ResponseEntity<List<GiftCertificate>> findAll(@RequestParam(value = "search", required = false) String search) {
+        List<SearchCriteria> params = new ArrayList<SearchCriteria>();
+        if (search != null) {
+            Pattern pattern = Pattern.compile("(\\w+?)(:|<|>)(\\w+?),");
+            Matcher matcher = pattern.matcher(search + ",");
+            while (matcher.find()) {
+                params.add(new SearchCriteria(matcher.group(1),
+                        matcher.group(2), matcher.group(3)));
+            }
+        }
+        List<GiftCertificate> certificates = certificateService.findAll(params);
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 

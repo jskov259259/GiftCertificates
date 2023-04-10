@@ -1,13 +1,13 @@
 package ru.clevertec.ecl.service;
 
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.dto.SearchCriteria;
 
 import java.util.List;
-import java.util.Map;
 
 public interface CertificateService {
 
-    List<GiftCertificate> findAll(Map<String, String> filterParams);
+    List<GiftCertificate> findAll(List<SearchCriteria> params);
 
     GiftCertificate findById(Long id);
 

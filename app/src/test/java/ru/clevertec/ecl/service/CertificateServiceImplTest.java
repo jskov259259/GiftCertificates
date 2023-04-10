@@ -7,10 +7,12 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.clevertec.ecl.dto.SearchCriteria;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.service.impl.CertificateServiceImpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,24 +36,12 @@ class CertificateServiceImplTest {
     private ArgumentCaptor<String> queryCaptor;
 
     @Test
-    void checkFindAllWithoutFilterParams() {
-        Map<String, String> filterParams = new HashMap<>();
+    void checkFindAll() {
+        List<SearchCriteria> params = new ArrayList<>();
         doReturn(getCertificates())
-                .when(certificateDao).findAll(any(), any());
-        List<GiftCertificate> resultList = certificateService.findAll(filterParams);
+                .when(certificateDao).findAll(any());
+        List<GiftCertificate> resultList = certificateService.findAll(params);
         assertThat(resultList).hasSize(3);
-    }
-
-    @Test
-    void checkFindAllWithFilterParams() {
-        Map<String, String> filterParams = new HashMap<>();
-        filterParams.put("tagName", "food");
-        doReturn(getCertificates())
-                .when(certificateDao).findAllWithFilter(queryCaptor.capture());
-        List<GiftCertificate> resultList = certificateService.findAll(filterParams);
-        verify(certificateDao).findAllWithFilter(any());
-        assertThat(resultList).hasSize(3);
-        assertThat(queryCaptor.getValue()).isNotNull();
     }
 
     @Test
