@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,10 @@ import java.util.List;
 public class TagDto {
 
     private Long id;
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
     private List<GiftCertificate> certificates = new ArrayList<>();
 
     public TagDto(Long id, String name) {

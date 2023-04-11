@@ -1,8 +1,6 @@
 package ru.clevertec.ecl.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonGetter;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +19,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import ru.clevertec.ecl.util.DurationDayParser;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -82,16 +79,6 @@ public class GiftCertificate implements BaseEntity<Long> {
         this.duration = duration;
         this.createDate = createDate;
         this.lastUpdateDate = lastUpdateDate;
-    }
-
-    @JsonGetter("duration")
-    public String getDurationValue() {
-        return duration.toDays() + " days";
-    }
-
-    @JsonSetter
-    public void setDurationValue(String value) {
-        this.duration = Duration.ofDays(DurationDayParser.parse(value));
     }
 
     public void addTag(Tag tag) {

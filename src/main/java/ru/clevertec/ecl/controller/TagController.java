@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,13 +51,13 @@ public class TagController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<TagDto> create(@RequestBody TagDto tagDto) {
+    public ResponseEntity<TagDto> create(@RequestBody @Valid TagDto tagDto) {
         TagDto createdTagDto = tagService.save(tagDto);
         return new ResponseEntity<>(createdTagDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<TagDto> update(@PathVariable Long id, @RequestBody TagDto tagDto) {
+    public ResponseEntity<TagDto> update(@PathVariable Long id, @RequestBody @Valid TagDto tagDto) {
         tagDto.setId(id);
         TagDto tag = tagService.update(tagDto);
         return new ResponseEntity<>(tag, HttpStatus.OK);

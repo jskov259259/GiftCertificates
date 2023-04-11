@@ -1,5 +1,6 @@
 package ru.clevertec.ecl.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +47,14 @@ public class CertificateController {
     }
 
     @PostMapping(consumes = "application/json", produces = "application/json")
-    public ResponseEntity<GiftCertificateDto> create(@RequestBody GiftCertificateDto certificateDto) {
+    public ResponseEntity<GiftCertificateDto> create(@RequestBody @Valid GiftCertificateDto certificateDto) {
         GiftCertificateDto createdGiftCertificateDto = certificateService.save(certificateDto);
         return new ResponseEntity<>(createdGiftCertificateDto, HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/{id}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<GiftCertificateDto> update(@PathVariable Long id, @RequestBody GiftCertificateDto certificateDto) {
+    public ResponseEntity<GiftCertificateDto> update(@PathVariable Long id,
+                                                     @RequestBody @Valid GiftCertificateDto certificateDto) {
         certificateDto.setId(id);
         GiftCertificateDto certificate = certificateService.update(certificateDto);
         return new ResponseEntity<>(certificate, HttpStatus.OK);
