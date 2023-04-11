@@ -1,8 +1,7 @@
 package ru.clevertec.ecl.service;
 
-import ru.clevertec.ecl.dto.*;
-
-import java.util.*;
+import ru.clevertec.ecl.dto.UserDto;
+import java.util.List;
 
 public interface UserService {
 

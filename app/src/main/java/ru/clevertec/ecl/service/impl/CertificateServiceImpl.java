@@ -85,6 +85,7 @@ public class CertificateServiceImpl implements CertificateService {
         currentCertificate.setDescription(newCertificate.getDescription());
         currentCertificate.setPrice(newCertificate.getPrice());
         currentCertificate.setDuration(newCertificate.getDuration());
+        if (newCertificate.getTags() != null)
         newCertificate.getTags().stream().forEach(currentCertificate::addTag);
     }
 

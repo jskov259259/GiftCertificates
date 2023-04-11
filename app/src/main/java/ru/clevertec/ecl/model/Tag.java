@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "name")
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "tag")
 public class Tag implements BaseEntity<Long> {
@@ -34,6 +36,11 @@ public class Tag implements BaseEntity<Long> {
     private Long id;
 
     private String name;
+
+    public Tag(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     @ToString.Exclude
     @ManyToMany(fetch = FetchType.LAZY,

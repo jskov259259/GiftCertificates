@@ -1,11 +1,8 @@
 package ru.clevertec.ecl.service;
 
-import org.springframework.web.bind.annotation.RequestBody;
 import ru.clevertec.ecl.dto.GiftCertificateDto;
-
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 public interface CertificateService {
 

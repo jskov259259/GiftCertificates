@@ -1,18 +1,21 @@
 package ru.clevertec.ecl.service.impl;
 
-import lombok.*;
-import org.springframework.data.domain.*;
-import org.springframework.stereotype.*;
-import org.springframework.transaction.annotation.*;
-import ru.clevertec.ecl.dto.*;
-import ru.clevertec.ecl.exceptions.*;
-import ru.clevertec.ecl.mapper.*;
-import ru.clevertec.ecl.model.*;
-import ru.clevertec.ecl.repository.*;
-import ru.clevertec.ecl.service.*;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.clevertec.ecl.dto.UserDto;
+import ru.clevertec.ecl.exceptions.UserNotFoundException;
+import ru.clevertec.ecl.mapper.UserMapper;
+import ru.clevertec.ecl.model.User;
+import ru.clevertec.ecl.repository.UserDao;
+import ru.clevertec.ecl.service.UserService;
 
-import java.util.*;
-import java.util.stream.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
