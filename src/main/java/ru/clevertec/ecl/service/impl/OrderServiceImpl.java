@@ -62,7 +62,9 @@ public class OrderServiceImpl implements OrderService {
     public OrderDto findOrderByUserIdAndOrderId(Long userId, Long orderId) {
         Order order = orderDao.findByIdAndUserId(orderId, userId)
                 .orElseThrow(() -> new OrderNotFoundException(orderId));
-        return orderMapper.orderToDto(order);
+        OrderDto orderDto = orderMapper.orderToDto(order);
+        setNullsToUnnecessaryFields(orderDto);
+        return orderDto;
     }
 
     private Order buildOrder(User user, GiftCertificate certificate) {
@@ -72,5 +74,11 @@ public class OrderServiceImpl implements OrderService {
                 .purchaseTime(LocalDateTime.now())
                 .totalPrice(certificate.getPrice())
                 .build();
+    }
+
+    private void setNullsToUnnecessaryFields(OrderDto order) {
+        order.setId(null);
+        order.setUserId(null);
+        order.setCertificateId(null);
     }
 }
