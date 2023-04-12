@@ -12,9 +12,11 @@ import ru.clevertec.ecl.service.OrderService;
 
 import java.util.Map;
 
+import static ru.clevertec.ecl.controller.config.Constants.ORDERS_URL;
+
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/orders")
+@RequestMapping(ORDERS_URL)
 public class OrderController {
 
     private final OrderService orderService;

@@ -20,13 +20,14 @@ import ru.clevertec.ecl.service.CertificateService;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static ru.clevertec.ecl.controller.config.Constants.CERTIFICATES_URL;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_NO;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_SIZE;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_SORT_BY;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/certificates")
+@RequestMapping(CERTIFICATES_URL)
 public class CertificateController {
 
     private final CertificateService certificateService;

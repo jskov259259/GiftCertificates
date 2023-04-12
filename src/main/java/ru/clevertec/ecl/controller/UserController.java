@@ -18,10 +18,11 @@ import java.util.List;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_NO;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_SIZE;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_SORT_BY;
+import static ru.clevertec.ecl.controller.config.Constants.USERS_URL;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping(USERS_URL)
 public class UserController {
 
     private final UserService userService;

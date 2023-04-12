@@ -22,10 +22,11 @@ import java.util.List;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_NO;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_PAGE_SIZE;
 import static ru.clevertec.ecl.controller.config.Constants.DEFAULT_SORT_BY;
+import static ru.clevertec.ecl.controller.config.Constants.TAGS_URL;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/tags")
+@RequestMapping(TAGS_URL)
 public class TagController {
 
     private TagService tagService;
