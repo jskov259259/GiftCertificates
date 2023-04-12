@@ -12,6 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import ru.clevertec.ecl.dto.GiftCertificateDto;
 import ru.clevertec.ecl.exceptions.CertificateNotFoundException;
 import ru.clevertec.ecl.mapper.GiftCertificateMapper;
@@ -34,10 +35,12 @@ import static ru.clevertec.ecl.util.Constants.TEST_ID;
 import static ru.clevertec.ecl.util.Constants.TEST_PAGE_NO;
 import static ru.clevertec.ecl.util.Constants.TEST_PAGE_SIZE;
 import static ru.clevertec.ecl.util.Constants.TEST_PRICE;
+import static ru.clevertec.ecl.util.Constants.TEST_SEARCH;
 import static ru.clevertec.ecl.util.Constants.TEST_SORT_BY;
 import static ru.clevertec.ecl.util.TestData.getCertificate;
 import static ru.clevertec.ecl.util.TestData.getCertificateDto;
 import static ru.clevertec.ecl.util.TestData.getCertificates;
+import static ru.clevertec.ecl.util.TestData.getSpecification;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceImplTest {
@@ -58,15 +61,16 @@ class CertificateServiceImplTest {
     void checkFindAll() {
         GiftCertificate certificate = getCertificate();
         GiftCertificateDto certificateDto = getCertificateDto();
+        Specification<GiftCertificate> specification = getSpecification(TEST_SEARCH);
 
         doReturn(new PageImpl<>(getCertificates()))
-                .when(certificateDao).findAll(PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)));
+                .when(certificateDao).findAll(specification, PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)));
         doReturn(certificateDto)
                 .when(certificateMapper).certificateToDto(certificate);
 
-        List<GiftCertificateDto> certificates = certificateService.findAll(TEST_PAGE_NO, TEST_PAGE_SIZE, TEST_SORT_BY);
+        List<GiftCertificateDto> certificates = certificateService.findAll(TEST_SEARCH, TEST_PAGE_NO, TEST_PAGE_SIZE, TEST_SORT_BY);
 
-        verify(certificateDao).findAll(PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)));
+        verify(certificateDao).findAll(specification, PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)));
         verify(certificateMapper, times(3)).certificateToDto(any());
 
         assertThat(certificates.get(0)).isEqualTo(certificateDto);

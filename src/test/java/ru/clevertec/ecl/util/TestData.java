@@ -1,9 +1,12 @@
 package ru.clevertec.ecl.util;
 
+import com.google.common.base.Joiner;
+import org.springframework.data.jpa.domain.Specification;
 import ru.clevertec.ecl.dto.GiftCertificateDto;
 import ru.clevertec.ecl.dto.OrderDto;
 import ru.clevertec.ecl.dto.TagDto;
 import ru.clevertec.ecl.dto.UserDto;
+import ru.clevertec.ecl.dto.criteria.SearchOperation;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.model.Order;
 import ru.clevertec.ecl.model.Tag;
@@ -11,6 +14,8 @@ import ru.clevertec.ecl.model.User;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TestData {
 
@@ -78,5 +83,21 @@ public class TestData {
 
     public static OrderDto getOrderDto() {
         return OrderDto.builder().id(1L).certificateId(1L).userId(1L).build();
+    }
+
+    public static Specification<GiftCertificate> getSpecification(String search) {
+        GiftCertificateSpecificationsBuilder builder = new GiftCertificateSpecificationsBuilder();
+        String operationSetExper = Joiner.on("|").join(SearchOperation.SIMPLE_OPERATION_SET);
+        Pattern pattern = Pattern.compile("(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        while (matcher.find()) {
+            builder.with(
+                    matcher.group(1),
+                    matcher.group(2),
+                    matcher.group(4),
+                    matcher.group(3),
+                    matcher.group(5));
+        }
+        return builder.build();
     }
 }

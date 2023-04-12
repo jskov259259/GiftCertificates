@@ -1,22 +1,28 @@
 package ru.clevertec.ecl.service.impl;
 
+import com.google.common.base.Joiner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dto.GiftCertificateDto;
+import ru.clevertec.ecl.dto.criteria.SearchOperation;
 import ru.clevertec.ecl.exceptions.CertificateNotFoundException;
 import ru.clevertec.ecl.mapper.GiftCertificateMapper;
 import ru.clevertec.ecl.repository.CertificateDao;
 import ru.clevertec.ecl.model.GiftCertificate;
 import ru.clevertec.ecl.service.CertificateService;
+import ru.clevertec.ecl.util.GiftCertificateSpecificationsBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -28,9 +34,11 @@ public class CertificateServiceImpl implements CertificateService {
     private final GiftCertificateMapper certificateMapper;
 
     @Override
-    public List<GiftCertificateDto> findAll(Integer pageNo, Integer pageSize, String sortBy) {
+    public List<GiftCertificateDto> findAll(String search, Integer pageNo, Integer pageSize, String sortBy) {
         Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
-        Page<GiftCertificate> pagedResult = certificateDao.findAll(paging);
+        Specification<GiftCertificate> specification = buildSpecification(search);
+
+        Page<GiftCertificate> pagedResult = certificateDao.findAll(specification, paging);
 
         return pagedResult.getContent().stream()
                 .map(certificateMapper::certificateToDto)
@@ -87,6 +95,22 @@ public class CertificateServiceImpl implements CertificateService {
         currentCertificate.setDuration(newCertificate.getDuration());
         if (newCertificate.getTags() != null)
         newCertificate.getTags().stream().forEach(currentCertificate::addTag);
+    }
+
+    private Specification<GiftCertificate> buildSpecification(String search) {
+        GiftCertificateSpecificationsBuilder builder = new GiftCertificateSpecificationsBuilder();
+        String operationSetExper = Joiner.on("|").join(SearchOperation.SIMPLE_OPERATION_SET);
+        Pattern pattern = Pattern.compile("(\\w+?)(" + operationSetExper + ")(\\p{Punct}?)(\\w+?)(\\p{Punct}?),");
+        Matcher matcher = pattern.matcher(search + ",");
+        while (matcher.find()) {
+            builder.with(
+                    matcher.group(1),
+                    matcher.group(2),
+                    matcher.group(4),
+                    matcher.group(3),
+                    matcher.group(5));
+        }
+        return builder.build();
     }
 
 }

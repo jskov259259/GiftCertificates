@@ -33,10 +33,11 @@ public class CertificateController {
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<GiftCertificateDto>> findAll(
+            @RequestParam(value = "search", required = false) String search,
             @RequestParam(defaultValue = DEFAULT_PAGE_NO) Integer pageNo,
             @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize,
             @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy) {
-        List<GiftCertificateDto> certificates = certificateService.findAll(pageNo, pageSize, sortBy);
+        List<GiftCertificateDto> certificates = certificateService.findAll(search, pageNo, pageSize, sortBy);
         return new ResponseEntity<>(certificates, HttpStatus.OK);
     }
 
