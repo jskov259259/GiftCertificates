@@ -41,6 +41,7 @@ import static ru.clevertec.ecl.util.TestData.getCertificate;
 import static ru.clevertec.ecl.util.TestData.getCertificateDto;
 import static ru.clevertec.ecl.util.TestData.getCertificates;
 import static ru.clevertec.ecl.util.TestData.getSpecification;
+import static ru.clevertec.ecl.util.TestData.getTagNames;
 
 @ExtendWith(MockitoExtension.class)
 class CertificateServiceImplTest {
@@ -71,6 +72,26 @@ class CertificateServiceImplTest {
         List<GiftCertificateDto> certificates = certificateService.findAll(TEST_SEARCH, TEST_PAGE_NO, TEST_PAGE_SIZE, TEST_SORT_BY);
 
         verify(certificateDao).findAll(specification, PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)));
+        verify(certificateMapper, times(3)).certificateToDto(any());
+
+        assertThat(certificates.get(0)).isEqualTo(certificateDto);
+    }
+
+    @Test
+    void checkFindAllByTagNames() {
+        GiftCertificate certificate = getCertificate();
+        GiftCertificateDto certificateDto = getCertificateDto();
+        List<String> tagNames = getTagNames();
+
+        doReturn(new PageImpl<>(getCertificates()))
+                .when(certificateDao).findAllByTagNames(PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)), tagNames);
+        doReturn(certificateDto)
+                .when(certificateMapper).certificateToDto(certificate);
+
+        List<GiftCertificateDto> certificates = certificateService.
+                findAllByTagNames(TEST_PAGE_NO, TEST_PAGE_SIZE, TEST_SORT_BY, getTagNames());
+
+        verify(certificateDao).findAllByTagNames(PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY)), tagNames);
         verify(certificateMapper, times(3)).certificateToDto(any());
 
         assertThat(certificates.get(0)).isEqualTo(certificateDto);

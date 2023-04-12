@@ -47,6 +47,17 @@ public class CertificateController {
         return new ResponseEntity<>(certificate, HttpStatus.OK);
     }
 
+    @GetMapping(value="/tags", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<List<GiftCertificateDto>> findAllByTagNames(
+            @RequestBody List<String> tagNames,
+            @RequestParam(defaultValue = DEFAULT_PAGE_NO) Integer pageNo,
+            @RequestParam(defaultValue = DEFAULT_PAGE_SIZE) Integer pageSize,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy) {
+        List<GiftCertificateDto> certificates = certificateService
+                .findAllByTagNames(pageNo, pageSize, sortBy, tagNames);
+        return new ResponseEntity<>(certificates, HttpStatus.OK);
+    }
+
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<GiftCertificateDto> create(@RequestBody @Valid GiftCertificateDto certificateDto) {
         GiftCertificateDto createdGiftCertificateDto = certificateService.save(certificateDto);

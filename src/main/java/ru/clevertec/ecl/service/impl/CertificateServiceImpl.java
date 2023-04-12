@@ -46,6 +46,16 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public List<GiftCertificateDto> findAllByTagNames(Integer pageNo, Integer pageSize, String sortBy,
+                                                      List<String> tagNames) {
+        Pageable paging = PageRequest.of(pageNo, pageSize, Sort.by(sortBy));
+        Page<GiftCertificate> pagedResult = certificateDao.findAllByTagNames(paging, tagNames);
+        return pagedResult.getContent().stream()
+                .map(certificateMapper::certificateToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public GiftCertificateDto findById(Long id) {
         GiftCertificate certificate = certificateDao.findById(id)
                 .orElseThrow(() -> new CertificateNotFoundException(id));

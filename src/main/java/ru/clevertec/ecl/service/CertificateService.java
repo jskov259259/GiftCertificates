@@ -9,6 +9,9 @@ public interface CertificateService {
 
     List<GiftCertificateDto> findAll(String search, Integer pageNo, Integer pageSize, String sortBy);
 
+    List<GiftCertificateDto> findAllByTagNames(Integer pageNo, Integer pageSize, String sortBy,
+                                               List<String> tagNames);
+
     GiftCertificateDto findById(Long id);
 
     GiftCertificateDto save(GiftCertificateDto certificateDto);

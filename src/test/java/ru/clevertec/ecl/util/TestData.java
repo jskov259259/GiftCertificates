@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class TestData {
 
@@ -40,6 +41,10 @@ public class TestData {
         tags.add(new Tag(1L, "Tag1"));
         tags.add(new Tag(2L, "Tag2"));
         return tags;
+    }
+
+    public static List<String> getTagNames() {
+        return getTags().stream().map(Tag::getName).collect(Collectors.toList());
     }
 
     public static Tag getTag() {
