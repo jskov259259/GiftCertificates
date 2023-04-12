@@ -41,11 +41,13 @@ public class GiftCertificateSpecificationsBuilder {
 
         Specification result = new GiftCertificateSpecification(params.get(0));
 
-        for (int i = 1; i < params.size(); i++) {
-            result = params.get(i).isOrPredicate()
-                    ? Specification.where(result).or(new GiftCertificateSpecification(params.get(i)))
-                    : Specification.where(result).and(new GiftCertificateSpecification(params.get(i)));
-        }
+        Specification finalResult = result;
+        params.stream().forEach(criteria -> {
+            if (criteria.isOrPredicate()) {
+                Specification.where(finalResult).or(new GiftCertificateSpecification(criteria));
+            } else
+                Specification.where(finalResult).and(new GiftCertificateSpecification(criteria));
+        });
 
         return result;
     }
