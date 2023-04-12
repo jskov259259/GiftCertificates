@@ -8,6 +8,5 @@
  */
 
 rootProject.name = 'GiftCertificates'
-include 'app'
 
 
