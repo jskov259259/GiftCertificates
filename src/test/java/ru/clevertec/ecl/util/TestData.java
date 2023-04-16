@@ -12,6 +12,9 @@ import ru.clevertec.ecl.model.Order;
 import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.model.User;
 
+import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,9 +25,12 @@ public class TestData {
 
     public static List<GiftCertificate> getCertificates() {
         List<GiftCertificate> certificates = new ArrayList<>();
-        certificates.add(GiftCertificate.builder().id(1L).name("Certificate1").build());
-        certificates.add(GiftCertificate.builder().id(2L).name("Certificate2").build());
-        certificates.add(GiftCertificate.builder().id(3L).name("Certificate3").build());
+        certificates.add(GiftCertificate.builder().id(1L).name("Certificate1").price(new BigDecimal(1))
+                .duration(Duration.ofDays(1)).createDate(LocalDateTime.now()).build());
+        certificates.add(GiftCertificate.builder().id(2L).name("Certificate2").price(new BigDecimal(2))
+                .duration(Duration.ofDays(2)).createDate(LocalDateTime.now()).build());
+        certificates.add(GiftCertificate.builder().id(3L).name("Certificate3").price(new BigDecimal(3))
+                .duration(Duration.ofDays(3)).createDate(LocalDateTime.now()).build());
         return certificates;
     }
 
@@ -38,8 +44,8 @@ public class TestData {
 
     public static List<Tag> getTags() {
         List<Tag> tags = new ArrayList<>();
-        tags.add(new Tag(1L, "Tag1"));
-        tags.add(new Tag(2L, "Tag2"));
+        tags.add(new Tag(1L, "food"));
+        tags.add(new Tag(2L, "alcohol"));
         return tags;
     }
 

@@ -9,7 +9,7 @@ public class Constants {
     public static final String TEST_SORT_BY = "id";
 
     public static final Long TEST_ID = 1L;
-    public static final BigDecimal TEST_PRICE = new BigDecimal("1.5");
+    public static final BigDecimal TEST_PRICE = new BigDecimal("5");
 
     public static final String TEST_SEARCH = "";
 }
