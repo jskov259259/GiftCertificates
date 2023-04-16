@@ -93,7 +93,7 @@ class CertificateDaoTestIT {
         Integer sizeBefore = certificateDao.findAll(specification,
                 PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY))).getContent().size();
 
-        certificateDao.deleteById(1L);
+        certificateDao.deleteById(7L);
 
         Integer sizeAfter = certificateDao.findAll(specification,
                 PageRequest.of(TEST_PAGE_NO, TEST_PAGE_SIZE, Sort.by(TEST_SORT_BY))).getContent().size();
