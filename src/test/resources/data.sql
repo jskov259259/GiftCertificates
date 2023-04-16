@@ -34,3 +34,9 @@ INSERT INTO users VALUES (4, 'Bob', 20);
 INSERT INTO users VALUES (5, 'Petr', 42);
 INSERT INTO users VALUES (6, 'Alexandr', 55);
 INSERT INTO users VALUES (7, 'Mike', 41);
+
+INSERT INTO orders(id, purchase_time, price, certificate_id, user_id) VALUES (1, '2023-03-20 16:35:40', 10, 1, 1);
+INSERT INTO orders(id, purchase_time, price, certificate_id, user_id) VALUES (2, '2023-03-21 15:30:20', 100.25, 2, 1);
+INSERT INTO orders(id, purchase_time, price, certificate_id, user_id) VALUES (3, '2023-03-21 16:50:50', 75, 3, 2);
+INSERT INTO orders(id, purchase_time, price, certificate_id, user_id) VALUES (4, '2023-03-22 12:00:00', 350, 4, 3);
+INSERT INTO orders(id, purchase_time, price, certificate_id, user_id) VALUES (5, '2023-03-22 16:20:10', 35, 6, 4);
