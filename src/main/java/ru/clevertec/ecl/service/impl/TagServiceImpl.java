@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.clevertec.ecl.dto.TagDto;
 import ru.clevertec.ecl.exceptions.TagNotFoundException;
 import ru.clevertec.ecl.mapper.TagMapper;
-import ru.clevertec.ecl.repository.TagDao;
+import ru.clevertec.ecl.integration.repository.TagDao;
 import ru.clevertec.ecl.model.Tag;
 import ru.clevertec.ecl.service.TagService;
 

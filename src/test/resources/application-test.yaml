@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    password: 5310Defender
+    username: postgres
+  jpa:
+    show-sql: true
+  liquibase:
+    enabled: true

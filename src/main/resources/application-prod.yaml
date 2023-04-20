@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/clevertec
+    username: postgres
+    password: 5310Defender
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        ddl-auto: update
+  liquibase:
+    change-log: db.changelog-master.yaml
+    enabled: false
+
+
+
+
+#spring.datasource.url= jdbc:postgresql://localhost:5432/clevertec
+#spring.datasource.username= postgres
+#spring.datasource.password= 5310Defender
+#
+#spring.jpa.properties.hibernate.jdbc.lob.non_contextual_creation= true
+#spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.PostgreSQLDialect
+#spring.jpa.hibernate.ddl-auto= update

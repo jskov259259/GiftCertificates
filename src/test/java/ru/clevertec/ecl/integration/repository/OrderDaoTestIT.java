@@ -1,4 +1,4 @@
-package ru.clevertec.ecl.repository;
+package ru.clevertec.ecl.integration.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
