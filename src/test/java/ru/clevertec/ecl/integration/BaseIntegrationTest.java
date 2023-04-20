@@ -9,13 +9,13 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.containers.PostgreSQLContainer;
 
-@Sql("classpath:db/data.sql")
+@Sql({"classpath:db/schema.sql", "classpath:db/data.sql"})
 @ActiveProfiles("test")
 @Transactional
 @SpringBootTest
 public abstract class BaseIntegrationTest {
 
-    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>();
+    private static PostgreSQLContainer<?> container = new PostgreSQLContainer<>("postgres:11.1");
 
     @BeforeAll
     static void init() {

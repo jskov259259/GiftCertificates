@@ -2,11 +2,12 @@ package ru.clevertec.ecl.integration.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import ru.clevertec.ecl.integration.BaseIntegrationTest;
 import ru.clevertec.ecl.model.Tag;
+import ru.clevertec.ecl.repository.TagDao;
 
 import java.util.Optional;
 
@@ -17,8 +18,7 @@ import static ru.clevertec.ecl.util.Constants.TEST_PAGE_SIZE;
 import static ru.clevertec.ecl.util.Constants.TEST_SORT_BY;
 import static ru.clevertec.ecl.util.TestData.getTag;
 
-@DataJpaTest
-class TagDaoTestIT {
+class TagDaoTestIT extends BaseIntegrationTest {
 
     @Autowired
     private TagDao tagDao;

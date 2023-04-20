@@ -2,12 +2,13 @@ package ru.clevertec.ecl.integration.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import ru.clevertec.ecl.integration.BaseIntegrationTest;
 import ru.clevertec.ecl.model.GiftCertificate;
+import ru.clevertec.ecl.repository.CertificateDao;
 
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -25,8 +26,7 @@ import static ru.clevertec.ecl.util.TestData.getCertificate;
 import static ru.clevertec.ecl.util.TestData.getSpecification;
 import static ru.clevertec.ecl.util.TestData.getTagNames;
 
-@DataJpaTest
-class CertificateDaoTestIT {
+class CertificateDaoTest extends BaseIntegrationTest {
 
     @Autowired
     private CertificateDao certificateDao;
