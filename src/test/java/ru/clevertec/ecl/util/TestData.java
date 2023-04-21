@@ -39,7 +39,8 @@ public class TestData {
     }
 
     public static GiftCertificateDto getCertificateDto() {
-        return GiftCertificateDto.builder().id(1L).name("Certificate1").build();
+        return GiftCertificateDto.builder().id(1L).name("Certificate1").price(new BigDecimal(1))
+                .duration(1L).build();
     }
 
     public static List<Tag> getTags() {
