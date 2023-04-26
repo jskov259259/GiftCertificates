@@ -77,16 +77,6 @@ class CertificateDaoTest extends BaseIntegrationTest {
         assertThat(updatedGiftCertificate.getPrice()).isEqualTo(BigDecimal.valueOf(5));
     }
 
-//    @Test
-//    void checkUpdatePrice() {
-//        GiftCertificate certificate = certificateDao.findById(1L).get();
-//        certificateDao.updatePrice(1L, TEST_PRICE);
-//        GiftCertificate updatedCertificate = certificateDao.findById(1L).get();
-//        System.out.println(updatedCertificate.getPrice());
-//        assertThat(certificate.getPrice()).isNotEqualTo(updatedCertificate.getPrice());
-//        assertThat(updatedCertificate.getPrice()).isEqualTo(BigDecimal.valueOf(5));
-//    }
-
     @Test
     void deleteById() {
         Specification<GiftCertificate> specification = getSpecification(TEST_SEARCH);
